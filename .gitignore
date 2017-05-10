@@ -1,29 +1,12 @@
-# Compiled Object files
-*.slo
-*.lo
+.cproject
+.project
 *.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+csvfile_main
+tests/Makefile
+tests/runTests
+tests/CMakeCache.txt
+tests/cmake_install.cmake
+tests/CMakeFiles
+Doxyfile
+html/
+latex/
