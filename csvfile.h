@@ -12,6 +12,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <sstream>
 #include <vector>
 
 
@@ -27,10 +28,11 @@ void copyFile(string, string, string);
  * (comma separated files).
  * It reads it in into a 2 dimensional vector of vectors
  */
+template <class T>
 class CsvFile {
 private:
     string m_filename;
-    vector< vector<string> > m_csv_vector;
+    vector< vector<T> > m_csv_vector;
     int m_row;
     int m_col = 6;
 public:
@@ -42,7 +44,7 @@ public:
     }
 
     //! Constructor for adding a row
-    CsvFile(string fileName, vector< vector<string> > a_csvLine) :
+    CsvFile(string fileName, vector< vector<T> > a_csvLine) :
         m_filename(fileName), m_csv_vector(a_csvLine), m_row(count_csv_file_lines())
     {
 
@@ -50,7 +52,7 @@ public:
 
     // return m_csv_vector
     //! Function for getting m_csv_vector
-    vector< vector<string> > get_m_csv_vector() { return m_csv_vector; }
+    vector< vector<T> > get_m_csv_vector() { return m_csv_vector; }
 
     //! Count csv lines in csv file
     int count_csv_file_lines();

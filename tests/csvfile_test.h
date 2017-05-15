@@ -54,7 +54,7 @@ TEST(csv_write_read_fileTest, csv_write_readPos) {
 
     clean_test_files();
 
-    CsvFile csv("test.csv", an_address);
+    CsvFile<string> csv("test.csv", an_address);
     csv.write_file("app");
     vector < vector<string> > csv_vector = csv.get_m_csv_vector();
 
@@ -65,7 +65,7 @@ TEST(csv_write_read_fileTest, csv_write_readPos) {
     ASSERT_EQ(csv.get_m_csv_vector().size(), 1) << "Expected 1 row written/read";
     ASSERT_EQ(act_lines, "1") << "Expected 1 row written/read";
 
-    CsvFile csv_r("test.csv");
+    CsvFile<string> csv_r("test.csv");
     csv_r.read_file();
 
     ASSERT_EQ(csv.count_vector_rows(), 1) << "Size of vector should be 1";
@@ -76,7 +76,7 @@ TEST(csv_write_read_fileTest, csv_write_readPos) {
 TEST(csv_search_fileTest, csv_search_Pos) {
     clean_test_files();
 
-    CsvFile csv("test.csv", an_address);
+    CsvFile<string> csv("test.csv", an_address);
     csv.write_file("in");
     string expected_found = "Piet Puk";
     string search_found = csv.search_entry("Puk");

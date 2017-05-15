@@ -37,3 +37,18 @@ string get_input(string a_text) {
         }
     }
 }
+
+void copyFile(string src_file, string dst_file, string operation) {
+    /* Copy a file for backup or for restore from backup
+     *
+     * @param src_file: source file
+     * @param dst_file: destination file
+     * @param operation: backup or restore
+     * @return: void
+     */
+    ifstream  src(src_file.c_str(), std::ios::binary);
+    ofstream  dst(dst_file.c_str(),   std::ios::binary);
+
+    dst << src.rdbuf();
+    cout << "Successfully made " + operation + " " + src_file + " to " + dst_file << endl;
+}

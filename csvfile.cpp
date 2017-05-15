@@ -15,22 +15,8 @@
 #include "common_utils.cpp"
 
 
-void copyFile(string src_file, string dst_file, string operation) {
-    /* Copy a file for backup or for restore from backup
-     *
-     * @param src_file: source file
-     * @param dst_file: destination file
-     * @param operation: backup or restore
-     * @return: void
-     */
-    ifstream  src(src_file.c_str(), std::ios::binary);
-    ofstream  dst(dst_file.c_str(),   std::ios::binary);
-
-    dst << src.rdbuf();
-    cout << "Successfully made " + operation + " " + src_file + " to " + dst_file << endl;
-}
-
-void CsvFile::print_entries() {
+template <class T>
+void CsvFile<T>::print_entries() {
     /* Print the csv entries from the 2 dimensional vector
      *
      * @param: no parameters
@@ -44,7 +30,8 @@ void CsvFile::print_entries() {
     }
 }
 
-int CsvFile::count_csv_file_lines(){
+template <class T>
+int CsvFile<T>::count_csv_file_lines(){
     /* Count the csv entries from the csv file
      *
      * @param: no parameters
@@ -60,7 +47,8 @@ int CsvFile::count_csv_file_lines(){
     return lines_count;
 }
 
-void CsvFile::read_file() {
+template <class T>
+void CsvFile<T>::read_file() {
     /* Reads in the csv entries from the csv file and pushes them into a
      * 2 dimensional vector of vectors
      *
@@ -83,7 +71,7 @@ void CsvFile::read_file() {
         getline(inf, csvLine, '\n');
         if (csvLine.size() != 0) {
             stringstream csvLineStream(csvLine);
-            vector<string> csvItem;
+            vector<T> csvItem;
             for(int j=0;j<m_col;j++) {
                 getline(csvLineStream, element, ',');
                 csvItem.push_back(element);
@@ -94,7 +82,43 @@ void CsvFile::read_file() {
     inf.close();
 }
 
-void CsvFile::write_file(string mode) {
+template <>
+void CsvFile<int>::read_file() {
+    /* Reads in the csv entries from the csv file and pushes them into a
+     * 2 dimensional vector of vectors
+     *
+     * @param: no parameters
+     * @return: void
+     */
+    string csvLine;
+    string element;
+    ifstream inf(m_filename.c_str());
+
+    // If we couldn't open the input file stream for reading
+    if (!inf) {
+        // Print an error and exit
+        cerr << m_filename << " could not be opened for reading!" << endl;
+        exit(1);
+    }
+
+    // While there's still stuff left to read
+    while (!inf.eof()) {
+        getline(inf, csvLine, '\n');
+        if (csvLine.size() != 0) {
+            stringstream csvLineStream(csvLine);
+            vector<int> csvItem;
+            for(int j=0;j<m_col;j++) {
+                getline(csvLineStream, element, ',');
+                csvItem.push_back(stoi(element));
+            }
+            m_csv_vector.push_back(csvItem);
+        }
+    }
+    inf.close();
+}
+
+template <class T>
+void CsvFile<T>::write_file(string mode) {
     /* Writes 2 dimensional vector to a csv file.
      *
      * @param: no parameters
@@ -141,7 +165,8 @@ void CsvFile::write_file(string mode) {
     }
 }
 
-int CsvFile::count_vector_rows() {
+template <class T>
+int CsvFile<T>::count_vector_rows() {
     /* Count the csv entries from 2 dimensional vector
      *
      * @param: no parameters
@@ -150,7 +175,8 @@ int CsvFile::count_vector_rows() {
     return m_csv_vector.size();
 }
 
-string CsvFile::search_entry(string search_for) {
+template <class T>
+string CsvFile<T>::search_entry(string search_for) {
     /* Searches a string from the csv entries from 2 dimensional vector
      *
      * @param: search_for: string to search for
@@ -174,7 +200,33 @@ string CsvFile::search_entry(string search_for) {
     return search_found;
 }
 
-void CsvFile::backup_data() {
+template <>
+string CsvFile<int>::search_entry(string search_for) {
+    /* Searches a string from the csv entries from 2 dimensional vector
+     *
+     * @param: search_for: string to search for
+     * @return: void
+     */
+    string search_found;
+
+    for(int i=0;i<m_row;i++) {
+        for(int j=0;j<m_col;j++) {
+            if(to_string(m_csv_vector[i][j]).find(search_for) != std::string::npos) {
+                search_found = m_csv_vector[i][j];
+                for(int x=0; x<m_col; x++){
+                    cout <<  m_csv_vector[i][x] << " ";
+                }
+                cout << endl;
+                break; // At first element found stop searching the elements
+            }
+        }
+    }
+
+    return search_found;
+}
+
+template <class T>
+void CsvFile<T>::backup_data() {
     /* Creates backup directory if not exists and makes a backup of csv file
      *
      * @param: no parameters
@@ -196,7 +248,8 @@ void CsvFile::backup_data() {
     copyFile(m_filename, "backup/" + m_filename + ".bkup", "backup of");
 }
 
-int CsvFile::restore_data() {
+template <class T>
+int CsvFile<T>::restore_data() {
     /* Restores backup of the csv file
      *
      * @param: no parameters
@@ -227,7 +280,8 @@ int CsvFile::restore_data() {
     return 0;
 }
 
-void CsvFile::update_field(int row) {
+template <class T>
+void CsvFile<T>::update_field(int row) {
     /* Updates a column in a row of 2 dimensional array
      *
      * @param: row: the row in which a column can be updated
@@ -253,7 +307,35 @@ void CsvFile::update_field(int row) {
     }
 }
 
-void CsvFile::delete_modify(string mode, string csvSubject) {
+template <>
+void CsvFile<int>::update_field(int row) {
+    /* Updates a column in a row of 2 dimensional array
+     *
+     * @param: row: the row in which a column can be updated
+     * @return: void
+     */
+    for(int j=0;j<m_col;j++) {
+        cout << m_csv_vector[row][j] << endl;
+        string confirm = get_input("Do you want to modify this string?\n"
+                                   "Confirm y/n or quit: q:");
+
+        if(confirm == "y") {
+            string change_string = get_input("Enter new string?");
+            m_csv_vector[row][j] = stoi(change_string);
+
+            cout << "changed to: " << m_csv_vector[row][j] << endl;
+        }
+        else if (confirm == "n") {
+            continue;
+        }
+        else if(confirm == "q") {
+            break;
+        }
+    }
+}
+
+template <class T>
+void CsvFile<T>::delete_modify(string mode, string csvSubject) {
     /* Deletes or modifies a row in the 2 dimensional array
      *
      * @param: mode: delete or modify
@@ -316,3 +398,6 @@ void CsvFile::delete_modify(string mode, string csvSubject) {
         }
     }
 }
+
+template class CsvFile<string>;
+template class CsvFile<int>;
