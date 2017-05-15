@@ -8,6 +8,7 @@
  */
 #include <gtest/gtest.h>
 #include "../csvfile.h"
+#include "../csvfile.cpp"
 #include "csvfile_test.h"
 
 
