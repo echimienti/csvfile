@@ -34,18 +34,18 @@ private:
     string m_filename;
     vector< vector<T> > m_csv_vector;
     int m_row;
-    int m_col = 6;
+    int m_col;
 public:
     //! Constructor for all operations except adding a row
-    CsvFile(string fileName) :
-            m_filename(fileName), m_row(count_csv_file_lines())
+    CsvFile(string fileName, int col) :
+            m_filename(fileName), m_row(count_csv_file_lines()), m_col(col)
     {
 
     }
 
     //! Constructor for adding a row
-    CsvFile(string fileName, vector< vector<T> > a_csvLine) :
-        m_filename(fileName), m_csv_vector(a_csvLine), m_row(count_csv_file_lines())
+    CsvFile(string fileName, vector< vector<T> > a_csvLine, int col) :
+        m_filename(fileName), m_csv_vector(a_csvLine), m_row(count_csv_file_lines()), m_col(col)
     {
 
     }
