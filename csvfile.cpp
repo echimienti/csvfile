@@ -212,7 +212,7 @@ string CsvFile<int>::search_entry(string search_for) {
     for(int i=0;i<m_row;i++) {
         for(int j=0;j<m_col;j++) {
             if(to_string(m_csv_vector[i][j]).find(search_for) != std::string::npos) {
-                search_found = m_csv_vector[i][j];
+                search_found = to_string(m_csv_vector[i][j]);
                 for(int x=0; x<m_col; x++){
                     cout <<  m_csv_vector[i][x] << " ";
                 }
