@@ -7,7 +7,7 @@
  *
  */
 #include <gtest/gtest.h>
-#include "../csvfile.cpp"
+#include "../csvfile.h"
 #include "csvfile_test.h"
 
 
