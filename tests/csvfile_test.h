@@ -21,9 +21,10 @@ vector<string> an_entry {"Piet Puk",
 
 vector< vector <string> > an_address { an_entry };
 
-vector<int> num_entry {1, 2, 3, 4, 5};
+vector<int> num_entry1 {1, 2, 3, 4, 5};
+vector<int> num_entry2 {6, 7, 8, 9, 10};
 
-vector< vector <int> > a_num_vec { num_entry };
+vector< vector <int> > a_num_vec { num_entry1 };
 
 string system_cmd_output() {
     ifstream inf("out.txt");
@@ -148,6 +149,20 @@ TEST(csv_search_file_intTest, csv_search_Neg) {
     string search_found = csv.search_entry("2");
 
     ASSERT_NE(search_found, expected_found) << "2";
+
+    clean_test_files();
+}
+
+TEST(csv_add_second_entry_intTest, csv_search_Pos) {
+    clean_test_files();
+
+    a_num_vec.push_back(num_entry2);
+
+    CsvFile<int> csv("test.csv", a_num_vec, 5);
+    ASSERT_EQ(csv.count_vector_rows(), 2) << "Size of vector should be 2";
+
+    csv.write_file("in");
+    ASSERT_EQ(csv.count_csv_file_lines(), 2) << "Nr of rows in csv file should be 2";
 
     clean_test_files();
 }
