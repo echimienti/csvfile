@@ -24,7 +24,7 @@ void CsvFile<T>::print_entries() {
      */
     for(int i=0;i<m_row;i++) {
         for(int j=0;j<m_col;j++) {
-            cout << m_csv_vector[i][j] << ' ';
+            cout << std::setprecision (15) << m_csv_vector[i][j] << ' ';
         }
         cout << endl;
     }
@@ -117,6 +117,41 @@ void CsvFile<int>::read_file() {
     inf.close();
 }
 
+template <>
+void CsvFile<double>::read_file() {
+    /* Reads in the csv entries from the csv file and pushes them into a
+     * 2 dimensional vector of vectors
+     *
+     * @param: no parameters
+     * @return: void
+     */
+    string csvLine;
+    string element;
+    ifstream inf(m_filename.c_str());
+
+    // If we couldn't open the input file stream for reading
+    if (!inf) {
+        // Print an error and exit
+        cerr << m_filename << " could not be opened for reading!" << endl;
+        exit(1);
+    }
+
+    // While there's still stuff left to read
+    while (!inf.eof()) {
+        getline(inf, csvLine, '\n');
+        if (csvLine.size() != 0) {
+            stringstream csvLineStream(csvLine);
+            vector<double> csvItem;
+            for(int j=0;j<m_col;j++) {
+                getline(csvLineStream, element, ',');
+                csvItem.push_back(stod(element));
+            }
+            m_csv_vector.push_back(csvItem);
+        }
+    }
+    inf.close();
+}
+
 template <class T>
 void CsvFile<T>::write_file(string mode) {
     /* Writes 2 dimensional vector to a csv file.
@@ -202,7 +237,7 @@ string CsvFile<T>::search_entry(string search_for) {
 
 template <>
 string CsvFile<int>::search_entry(string search_for) {
-    /* Searches a string from the csv entries from 2 dimensional vector
+    /* Searches an integer from the csv entries from 2 dimensional vector
      *
      * @param: search_for: string to search for
      * @return: void
@@ -218,6 +253,40 @@ string CsvFile<int>::search_entry(string search_for) {
                 }
                 cout << endl;
                 break; // At first element found stop searching the elements
+            }
+        }
+    }
+
+    return search_found;
+}
+
+template <>
+string CsvFile<double>::search_entry(string search_for) {
+    /* Searches a double from the csv entries from 2 dimensional vector
+     *
+     * @param: search_for: string to search for
+     * @return: void
+     */
+    string search_found;
+    stringstream strstr;
+
+    for(int i=0;i<m_row;i++) {
+        for(int j=0;j<m_col;j++) {
+            strstr << std::fixed << setprecision( 15 ) << m_csv_vector[i][j];
+            string str = strstr.str();
+
+            if(str.find(search_for) != std::string::npos) {
+                //remove trailing 0
+                str.erase ( str.find_last_not_of('0') + 1, std::string::npos );
+                search_found = str;
+                for(int x=0; x<m_col; x++){
+                    cout << m_csv_vector[i][x] << " ";
+                }
+                cout << endl;
+                break; // At first element found stop searching the elements
+            }
+            else {
+                strstr.str(std::string()); // clear stringstream
             }
         }
     }
@@ -334,6 +403,33 @@ void CsvFile<int>::update_field(int row) {
     }
 }
 
+template <>
+void CsvFile<double>::update_field(int row) {
+    /* Updates a column in a row of 2 dimensional array
+     *
+     * @param: row: the row in which a column can be updated
+     * @return: void
+     */
+    for(int j=0;j<m_col;j++) {
+        cout << m_csv_vector[row][j] << endl;
+        string confirm = get_input("Do you want to modify this string?\n"
+                                   "Confirm y/n or quit: q:");
+
+        if(confirm == "y") {
+            string change_string = get_input("Enter new string?");
+            m_csv_vector[row][j] = stod(change_string);
+
+            cout << "changed to: " << m_csv_vector[row][j] << endl;
+        }
+        else if (confirm == "n") {
+            continue;
+        }
+        else if(confirm == "q") {
+            break;
+        }
+    }
+}
+
 template <class T>
 void CsvFile<T>::delete_modify(string mode, string csvSubject) {
     /* Deletes or modifies a row in the 2 dimensional array
@@ -401,3 +497,5 @@ void CsvFile<T>::delete_modify(string mode, string csvSubject) {
 
 template class CsvFile<string>;
 template class CsvFile<int>;
+template class CsvFile<double>;
+

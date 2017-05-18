@@ -26,6 +26,14 @@ vector<int> num_entry2 {6, 7, 8, 9, 10};
 
 vector< vector <int> > a_num_vec { num_entry1 };
 
+vector<double> double_entry1 {1.99999999999996,
+                           2.99999999999996,
+                           3.99999999999996,
+                           4.99999999999996,
+                           5.99999999999996};
+
+vector< vector <double> > a_double_vec { double_entry1 };
+
 string system_cmd_output() {
     ifstream inf("out.txt");
     string line;
@@ -55,6 +63,7 @@ void clean_test_files() {
     }
 }
 
+// string tests
 TEST(csv_write_read_file_stringTest, csv_write_readPos) {
 
     clean_test_files();
@@ -99,11 +108,12 @@ TEST(csv_search_file_stringTest, csv_search_Neg) {
     string expected_found = "Pietje Puk";
     string search_found = csv.search_entry("Pietje Puk");
 
-    ASSERT_NE(search_found, expected_found) << "Did not find Pietje Puk";
+    ASSERT_NE(search_found, expected_found) << "Should not find Pietje Puk";
 
     clean_test_files();
 }
 
+// integer tests
 TEST(csv_write_read_file_intTest, csv_write_readPos) {
 
     clean_test_files();
@@ -135,7 +145,7 @@ TEST(csv_search_file_intTest, csv_search_Pos) {
     string expected_found = "3";
     string search_found = csv.search_entry("3");
 
-    ASSERT_EQ(search_found, expected_found) << "3";
+    ASSERT_EQ(search_found, expected_found) << "Did not find 3";
 
     clean_test_files();
 }
@@ -146,9 +156,9 @@ TEST(csv_search_file_intTest, csv_search_Neg) {
     CsvFile<int> csv("test.csv", a_num_vec, 5);
     csv.write_file("in");
     string expected_found = "-1";
-    string search_found = csv.search_entry("2");
+    string search_found = csv.search_entry("-1");
 
-    ASSERT_NE(search_found, expected_found) << "2";
+    ASSERT_NE(search_found, expected_found) << "Should not find -1";
 
     clean_test_files();
 }
@@ -163,6 +173,57 @@ TEST(csv_add_second_entry_intTest, csv_search_Pos) {
 
     csv.write_file("in");
     ASSERT_EQ(csv.count_csv_file_lines(), 2) << "Nr of rows in csv file should be 2";
+
+    clean_test_files();
+}
+
+// double tests
+TEST(csv_write_read_file_doubleTest, csv_write_readPos) {
+
+    clean_test_files();
+
+    CsvFile<double> csv("test.csv", a_double_vec, 5);
+    csv.write_file("app");
+    vector < vector<double> > csv_vector = csv.get_m_csv_vector();
+
+    system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
+
+    string act_lines = system_cmd_output();
+
+    ASSERT_EQ(csv.get_m_csv_vector().size(), 1) << "Expected 1 row written/read";
+    ASSERT_EQ(act_lines, "1") << "Expected 1 row written/read";
+
+    CsvFile<double> csv_r("test.csv", 5);
+    csv_r.read_file();
+
+    ASSERT_EQ(csv.count_vector_rows(), 1) << "Size of vector should be 1";
+
+    clean_test_files();
+}
+
+TEST(csv_search_file_doubleTest, csv_search_Pos) {
+    clean_test_files();
+
+    CsvFile<double> csv("test.csv", a_double_vec, 5);
+    csv.write_file("in");
+    cout << "Printing entries:" << endl;
+    string expected_found = "3.99999999999996";
+    string search_found = csv.search_entry("3.99999999999996");
+
+    ASSERT_EQ(search_found, expected_found) << "3.99999999999996";
+
+    clean_test_files();
+}
+
+TEST(csv_search_file_doubleTest, csv_search_Neg) {
+    clean_test_files();
+
+    CsvFile<double> csv("test.csv", a_double_vec, 5);
+    csv.write_file("in");
+    string expected_found = "2.99999999999997";
+    string search_found = csv.search_entry("2.99999999999997");
+
+    ASSERT_NE(search_found, expected_found) << "Should not find 2.99999999999997";
 
     clean_test_files();
 }
