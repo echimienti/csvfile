@@ -23,11 +23,41 @@ void CsvFile<T>::print_entries() {
      * @param: no parameters
      * @return: void
      */
-    for(int i=0;i<m_row;i++) {
-        for(int j=0;j<m_col;j++) {
-            cout << std::setprecision (15) << m_csv_vector[i][j] << ' ';
+    string input_lines;
+    string scrolling;
+    int nr_lines_per_time;
+    int nr_lines_printed = 0;
+
+    if(m_row > 20) {
+        input_lines = get_input("How many lines per time to print, enter a nr: ");
+    }
+    else {
+        input_lines = to_string(m_row);
+    }
+
+    nr_lines_per_time = stoi(input_lines);
+
+    while(nr_lines_printed < m_row) {
+        cout << "m_row: " << m_row << endl;
+        cout << "nr_lines_printed: " << nr_lines_printed << endl;
+        for(int i=nr_lines_printed;i < nr_lines_printed + nr_lines_per_time;i++) {
+            for(int j=0;j<m_col;j++) {
+                cout << std::setprecision (15) << m_csv_vector[i][j] << ' ';
+            }
+            cout << endl;
         }
-        cout << endl;
+
+        nr_lines_printed += nr_lines_per_time;
+
+        if(nr_lines_printed + nr_lines_per_time >= m_row){
+            nr_lines_per_time = m_row - nr_lines_printed;
+        }
+
+        scrolling = get_input("Press any key for next lines or q to quit");
+
+        if(scrolling == "q"){
+            break;
+        }
     }
 }
 
@@ -467,7 +497,7 @@ void CsvFile<T>::delete_modify(string mode, string csvSubject) {
                         throw("Error invalid mode!");
                     }
                 }
-                else if(confirm == "q") {
+                if(confirm_l == "q") {
                     break;
                 }
 
