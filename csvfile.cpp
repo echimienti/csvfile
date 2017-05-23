@@ -38,8 +38,6 @@ void CsvFile<T>::print_entries() {
     nr_lines_per_time = stoi(input_lines);
 
     while(nr_lines_printed < m_row) {
-        cout << "m_row: " << m_row << endl;
-        cout << "nr_lines_printed: " << nr_lines_printed << endl;
         for(int i=nr_lines_printed;i < nr_lines_printed + nr_lines_per_time;i++) {
             for(int j=0;j<m_col;j++) {
                 cout << std::setprecision (15) << m_csv_vector[i][j] << ' ';
