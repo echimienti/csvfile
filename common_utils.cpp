@@ -7,8 +7,20 @@
  */
 
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
+
+bool is_number(const string& s)
+    /* Check if string is a number
+     *
+     * @param s: string to check
+     * @return: boolean: true or false
+     */
+{
+    return !s.empty() && std::find_if(s.begin(),
+        s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
+}
 
 string get_input(string a_text) {
     /* Get and return user input. Provides also input validation.
