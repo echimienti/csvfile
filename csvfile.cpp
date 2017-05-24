@@ -51,7 +51,9 @@ void CsvFile<T>::print_entries() {
             nr_lines_per_time = m_row - nr_lines_printed;
         }
 
-        scrolling = get_input("Press any key for next lines or q to quit");
+        if(m_row > 20) {
+            scrolling = get_input("Press any key for next lines or q to quit");
+        }
 
         if(scrolling == "q"){
             break;
