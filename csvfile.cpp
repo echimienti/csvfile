@@ -13,6 +13,7 @@
 #include <sstream>
 #include <string>
 #include <iomanip>
+#include <limits>
 #include "common_utils.cpp"
 
 
@@ -29,7 +30,9 @@ void CsvFile<T>::print_entries() {
     int nr_lines_printed = 0;
 
     if(m_row > 20) {
-        input_lines = get_input("How many lines per time to print, enter a nr: ");
+        while(!is_number(input_lines)){
+            input_lines = get_input("How many lines per time to print, enter a nr: ");
+        }
     }
     else {
         input_lines = to_string(m_row);
