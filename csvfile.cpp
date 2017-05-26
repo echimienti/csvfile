@@ -222,7 +222,12 @@ void CsvFile<T>::write_file(string mode) {
 
         for(int i=0;i<m_row;i++) {
             for(int j=0;j<m_col;j++) {
-                outf << m_csv_vector[i][j] << ",";
+                if(j < m_col - 1){
+                    outf << m_csv_vector[i][j] << ",";
+                }
+                else {
+                    outf << m_csv_vector[i][j];
+                }
             }
             outf << endl;
         }
