@@ -101,8 +101,7 @@ void CsvFile<T>::read_file() {
     }
 
     // While there's still stuff left to read
-    while (!inf.eof()) {
-        getline(inf, csvLine, '\n');
+    while (getline(inf, csvLine, '\n')) {
         if (csvLine.size() != 0) {
             stringstream csvLineStream(csvLine);
             vector<T> csvItem;
@@ -136,8 +135,7 @@ void CsvFile<int>::read_file() {
     }
 
     // While there's still stuff left to read
-    while (!inf.eof()) {
-        getline(inf, csvLine, '\n');
+    while (getline(inf, csvLine, '\n')) {
         if (csvLine.size() != 0) {
             stringstream csvLineStream(csvLine);
             vector<int> csvItem;
@@ -171,8 +169,7 @@ void CsvFile<double>::read_file() {
     }
 
     // While there's still stuff left to read
-    while (!inf.eof()) {
-        getline(inf, csvLine, '\n');
+    while (getline(inf, csvLine, '\n')) {
         if (csvLine.size() != 0) {
             stringstream csvLineStream(csvLine);
             vector<double> csvItem;
