@@ -124,11 +124,9 @@ void CsvFile<T>::read_file() {
 
                 // if buffer is empty push the element
                 if(str_buf.size() == 0) {
-                    cout << element << " ";
                     csvItem.push_back(element);
                 }
             }
-            cout << endl;
             m_csv_vector.push_back(csvItem);
         }
     }
