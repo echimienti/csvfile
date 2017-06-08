@@ -42,7 +42,7 @@ void CsvFile<T>::print_entries() {
 
     while(nr_lines_printed < m_row) {
         for(int i=nr_lines_printed;i < nr_lines_printed + nr_lines_per_time;i++) {
-            for(int j=0;j<m_col;j++) {
+            for(uint j=0;j<m_csv_vector[i].size();j++) {
                 cout << std::setprecision (15) << m_csv_vector[i][j] << ' ';
             }
             cout << endl;
@@ -103,12 +103,32 @@ void CsvFile<T>::read_file() {
     // While there's still stuff left to read
     while (getline(inf, csvLine, '\n')) {
         if (csvLine.size() != 0) {
-            stringstream csvLineStream(csvLine);
+            int nr_el_comma = count(csvLine.begin(), csvLine.end(), ',');
+            string str_buf = "";
             vector<T> csvItem;
-            for(int j=0;j<m_col;j++) {
+            stringstream csvLineStream(csvLine);
+
+            for(int j=0;j<=nr_el_comma;j++) {
                 getline(csvLineStream, element, ',');
-                csvItem.push_back(element);
+
+                if(str_buf.size() > 0) {
+                    element+=str_buf;
+                }
+
+                // check element starts with double quote and element is not only double quote
+                if(element.find("\"") == 0 && element.size() > 1) {
+                    str_buf = element;
+                } else {
+                    str_buf = "";
+                }
+
+                // if buffer is empty push the element
+                if(str_buf.size() == 0) {
+                    cout << element << " ";
+                    csvItem.push_back(element);
+                }
             }
+            cout << endl;
             m_csv_vector.push_back(csvItem);
         }
     }
@@ -256,7 +276,7 @@ string CsvFile<T>::search_entry(string search_for) {
     string search_found;
 
     for(int i=0;i<m_row;i++) {
-        for(int j=0;j<m_col;j++) {
+        for(uint j=0;j<m_csv_vector[i].size();j++) {
             if(m_csv_vector[i][j].find(search_for) != std::string::npos) {
                 search_found = m_csv_vector[i][j];
                 for(int x=0; x<m_col; x++){
@@ -392,7 +412,7 @@ void CsvFile<T>::update_field(int row) {
      * @param: row: the row in which a column can be updated
      * @return: void
      */
-    for(int j=0;j<m_col;j++) {
+    for(uint j=0;j<m_csv_vector[row].size();j++) {
         cout << m_csv_vector[row][j] << endl;
         string confirm = get_input("Do you want to modify this string?\n"
                                    "Confirm y/n or quit: q:");
@@ -481,7 +501,7 @@ void CsvFile<T>::delete_modify(string mode, string csvSubject) {
         int line_nr = stoi(get_input("Line number to " + mode + "\nEnter -1 to step through them all:"));
         if(line_nr == -1) {
             for(int i=0;i<m_row;i++) {
-                for(int j=0;j<m_col;j++) {
+                for(uint j=0;j<m_csv_vector[i].size();j++) {
                     cout << m_csv_vector[i][j] << ' ';
                 }
 
@@ -511,7 +531,7 @@ void CsvFile<T>::delete_modify(string mode, string csvSubject) {
         }
         else {
             if(mode == "delete"){
-                for(int j=0;j<m_col;j++) {
+                for(uint j=0;j<m_csv_vector[line_nr - 1].size();j++) {
                     cout << m_csv_vector[line_nr - 1][j] << ' ';
                 }
                 string confirm = get_input("Do you want to " + mode + " line: " + to_string(line_nr) + " ?\n"
