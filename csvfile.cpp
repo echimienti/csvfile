@@ -15,6 +15,7 @@
 #include <iomanip>
 #include <limits>
 #include "common_utils.cpp"
+#include <string.h>
 
 
 template <class T>
@@ -43,7 +44,7 @@ void CsvFile<T>::print_entries() {
     while(nr_lines_printed < m_row) {
         for(int i=nr_lines_printed;i < nr_lines_printed + nr_lines_per_time;i++) {
             for(uint j=0;j<m_csv_vector[i].size();j++) {
-                cout << std::setprecision (15) << m_csv_vector[i][j] << ' ';
+                cout << setprecision (15) << m_csv_vector[i][j] << ' ';
             }
             cout << endl;
         }
@@ -81,6 +82,112 @@ int CsvFile<T>::count_csv_file_lines(){
     return lines_count;
 }
 
+const char *UTF_16_BE_BOM = "\xFE\xFF";
+const char *UTF_16_LE_BOM = "\xFF\xFE";
+const char *UTF_8_BOM = "\xEF\xBB\xBF";
+const char *UTF_32_BE_BOM = "\x00\x00\xFE\xFF";
+const char *UTF_32_LE_BOM = "\xFF\xFE\x00\x00";
+
+string check_byte_order_mark(const char *data, size_t size){
+    if (size >= 3) {
+        if (memcmp(data, UTF_8_BOM, 3) == 0)
+            return "UTF-8";
+    }
+    if (size >= 4) {
+        if (memcmp(data, UTF_32_LE_BOM, 4) == 0)
+            return "UTF-32-LE";
+        if (memcmp(data, UTF_32_BE_BOM, 4) == 0)
+            return "UTF-32-BE";
+    }
+    if (size >= 2) {
+        if (memcmp(data, UTF_16_LE_BOM, 2) == 0)
+            return "UTF-16-LE";
+        if (memcmp(data, UTF_16_BE_BOM, 2) == 0)
+            return "UTF-16-BE";
+    }
+    return "Could not determine";
+}
+
+template<class T>
+int CsvFile<T>::ConvertUTF16(){
+
+    string line_utf16;
+    string line_utf8;
+    string first_line;
+    unsigned char byte_order_mark[3];
+    ifstream inf(m_filename.c_str());
+
+    // If we couldn't open the input file stream for reading
+    if (!inf) {
+        // Print an error and exit
+        cerr << m_filename << " could not be opened for reading!" << endl;
+        exit(1);
+    }
+
+    ofstream outf;
+
+    cout << "Opening file in out mode for converting" << endl;
+    outf.open((m_filename+".utf8").c_str(), ios::binary);
+
+    if (!outf) {
+        // Print an error and exit
+        cerr << "m_csv_vector.csv could not be opened for converting!" << endl;
+        exit(1);
+    }
+
+    int line_nr = 1;
+
+    while( getline(inf, line_utf16, '\n') ){
+        uint line_size = line_utf16.size();
+        string bom_type = check_byte_order_mark(line_utf16.c_str(), line_size);
+
+        if(bom_type == "UTF-16-LE"){
+            for (uint i=2; i < line_size; i++) {
+                if(i%2 == 0){
+                    line_utf8+=line_utf16[i];
+                }
+            }
+        }else{
+            for (uint i=0; i < line_size; i++) {
+                if(i%2 == 1){
+                    line_utf8+=line_utf16[i];
+                }
+            }
+        }
+
+        if(line_nr == 1){
+            first_line = line_utf8;
+        }
+
+        // no new line at end of file
+        if(!inf.eof()){
+            outf << line_utf8 << endl;
+        }
+
+        //reset line_utf8 for next line
+        line_utf8 = "";
+        line_nr++;
+    }
+
+    // write utf8 bom header
+    outf.clear();
+    outf.seekp(0, ios::beg);
+    byte_order_mark[0] = 0xEF;
+    byte_order_mark[1] = 0xBB;
+    byte_order_mark[2] = 0xBF;
+    outf << byte_order_mark[0] << byte_order_mark[1] << byte_order_mark[2];
+    outf << first_line << endl;
+
+    inf.close();
+    outf.close();
+
+    // rename new utf8 file to the m_filename
+    copyFile((m_filename+".utf8").c_str(), m_filename.c_str(), "move utf8 file to use");
+    sleep(500);
+
+    return 0;
+}
+
 template <class T>
 void CsvFile<T>::read_file() {
     /* Reads in the csv entries from the csv file and pushes them into a
@@ -98,6 +205,19 @@ void CsvFile<T>::read_file() {
         // Print an error and exit
         cerr << m_filename << " could not be opened for reading!" << endl;
         exit(1);
+    }
+
+    //check if need to convert from utf-16
+    getline(inf, csvLine, '\n');
+    string bom_type = check_byte_order_mark(csvLine.c_str(), csvLine.size());
+
+    // after reading first line set file back to beginning
+    inf.clear();
+    inf.seekg(0, ios::beg);
+
+    if(bom_type == "UTF-16-LE"){
+        ConvertUTF16();
+        read_file();
     }
 
     // While there's still stuff left to read
@@ -222,7 +342,7 @@ void CsvFile<T>::write_file(string mode) {
 
         if( !outf.is_open() )
         {
-            // std::cerr writes (typically error messages) to the standard error stream stderr (unbuffered)
+            // cerr writes (typically error messages) to the standard error stream stderr (unbuffered)
             // https://en.wikipedia.org/wiki/Stderr
             cout << "*** error: could not open output file\n" ;
         }
@@ -249,8 +369,8 @@ void CsvFile<T>::write_file(string mode) {
 
         outf.close();
     }
-    catch (std::exception &ex) {
-        std::cout << "Exception: " << ex.what() << "!\n";
+    catch (exception &ex) {
+        cout << "Exception: " << ex.what() << "!\n";
     }
 }
 
@@ -275,7 +395,7 @@ string CsvFile<T>::search_entry(string search_for) {
 
     for(int i=0;i<m_row;i++) {
         for(uint j=0;j<m_csv_vector[i].size();j++) {
-            if(m_csv_vector[i][j].find(search_for) != std::string::npos) {
+            if(m_csv_vector[i][j].find(search_for) != string::npos) {
                 search_found = m_csv_vector[i][j];
                 for(int x=0; x<m_col; x++){
                     cout <<  m_csv_vector[i][x] << " ";
@@ -300,7 +420,7 @@ string CsvFile<int>::search_entry(string search_for) {
 
     for(int i=0;i<m_row;i++) {
         for(int j=0;j<m_col;j++) {
-            if(to_string(m_csv_vector[i][j]).find(search_for) != std::string::npos) {
+            if(to_string(m_csv_vector[i][j]).find(search_for) != string::npos) {
                 search_found = to_string(m_csv_vector[i][j]);
                 for(int x=0; x<m_col; x++){
                     cout <<  m_csv_vector[i][x] << " ";
@@ -326,12 +446,12 @@ string CsvFile<double>::search_entry(string search_for) {
 
     for(int i=0;i<m_row;i++) {
         for(int j=0;j<m_col;j++) {
-            strstr << std::fixed << setprecision( 15 ) << m_csv_vector[i][j];
+            strstr << fixed << setprecision( 15 ) << m_csv_vector[i][j];
             string str = strstr.str();
 
-            if(str.find(search_for) != std::string::npos) {
+            if(str.find(search_for) != string::npos) {
                 //remove trailing 0
-                str.erase ( str.find_last_not_of('0') + 1, std::string::npos );
+                str.erase ( str.find_last_not_of('0') + 1, string::npos );
                 search_found = str;
                 for(int x=0; x<m_col; x++){
                     cout << m_csv_vector[i][x] << " ";
@@ -340,7 +460,7 @@ string CsvFile<double>::search_entry(string search_for) {
                 break; // At first element found stop searching the elements
             }
             else {
-                strstr.str(std::string()); // clear stringstream
+                strstr.str(string()); // clear stringstream
             }
         }
     }
