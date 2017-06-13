@@ -19,9 +19,10 @@
 MAKEFILE_DEPEND = .depend
 
 LINK=g++ $^ -o $@
+CFLAGS=-Wall -Wextra -I.
 
 .cpp.o:
-	g++ -std=c++11 -Wall -Wextra -I. -c $< -o $@
+	g++ -std=c++11 $(CFLAGS) -c $< -o $@
 
 TARGETS =
 TARGETS += csvfile_main
