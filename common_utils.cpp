@@ -59,8 +59,17 @@ void copyFile(string src_file, string dst_file, string operation) {
      * @return: void
      */
     ifstream  src(src_file.c_str(), std::ios::binary);
-    ofstream  dst(dst_file.c_str(),   std::ios::binary);
+    ofstream  dst(dst_file.c_str(), std::ios::binary);
 
     dst << src.rdbuf();
     cout << "Successfully made " + operation + " " + src_file + " to " + dst_file << endl;
+}
+
+void sleep(int milliseconds)
+{
+    clock_t time_end;
+    time_end = clock() + milliseconds * CLOCKS_PER_SEC/1000;
+    while (clock() < time_end)
+    {
+    }
 }
