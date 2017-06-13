@@ -83,6 +83,8 @@ public:
 
     //! Update a field in 2 dimensional vector
     void update_field(int);
+
+    int ConvertUTF16();
 };
 
 #endif /* CSV_FILE_PROJ_CSVFILE_H_ */
