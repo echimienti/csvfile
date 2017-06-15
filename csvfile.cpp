@@ -146,7 +146,6 @@ int CsvFile<T>::ConvertUTF16(){
             /* Start from first char, UTF-16-LE has 2 bytes BOM, add 1 to line_size
              *  because UTF-8 BOM has 3 bytes
              */
-            cout << "line size: " << line_size << endl;
             for (uint i=0; i < line_size; i++) {
                 if(i%2 == 0){
                     if(line_nr == 1 && i<3){
@@ -160,7 +159,6 @@ int CsvFile<T>::ConvertUTF16(){
                         // save first char after UTF-16 BOM
                         if(i == 0){
                             first_char = line_utf16[2];
-                            cout << "first_char: " << first_char << endl;
                         }
                     }
                     else {
@@ -174,7 +172,6 @@ int CsvFile<T>::ConvertUTF16(){
 
                 }
             }
-            cout << "line_utf8 size: " << line_utf8.size() << endl;
         }else{
             for (uint i=0; i < line_size; i++) {
                 if(i%2 == 1){
