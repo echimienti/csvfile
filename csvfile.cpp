@@ -147,7 +147,7 @@ int CsvFile<T>::ConvertUTF16(){
              *  because UTF-8 BOM has 3 bytes
              */
             for (uint i=0; i < line_size; i++) {
-                if(i%2 == 0){
+                if(i%2 == 0 && i < line_size - 3){
                     if(line_nr == 1 && i<3){
                         byte_order_mark[0] = 0xEF;
                         byte_order_mark[1] = 0xBB;
@@ -172,9 +172,10 @@ int CsvFile<T>::ConvertUTF16(){
 
                 }
             }
-        }else{
+        }
+        else{
             for (uint i=0; i < line_size; i++) {
-                if(i%2 == 1){
+                if(i%2 == 1 && i < line_size - 3){
                     line_utf8+=line_utf16[i];
                 }
             }
