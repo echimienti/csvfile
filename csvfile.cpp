@@ -114,6 +114,7 @@ int CsvFile<T>::ConvertUTF16(){
     string line_utf16;
     string line_utf8;
     string first_line;
+    char first_char;
     unsigned char byte_order_mark[3];
     ifstream inf(m_filename.c_str());
 
@@ -142,11 +143,38 @@ int CsvFile<T>::ConvertUTF16(){
         string bom_type = check_byte_order_mark(line_utf16.c_str(), line_size);
 
         if(bom_type == "UTF-16-LE"){
-            for (uint i=2; i < line_size; i++) {
+            /* Start from first char, UTF-16-LE has 2 bytes BOM, add 1 to line_size
+             *  because UTF-8 BOM has 3 bytes
+             */
+            cout << "line size: " << line_size << endl;
+            for (uint i=0; i < line_size; i++) {
                 if(i%2 == 0){
-                    line_utf8+=line_utf16[i];
+                    if(line_nr == 1 && i<3){
+                        byte_order_mark[0] = 0xEF;
+                        byte_order_mark[1] = 0xBB;
+                        byte_order_mark[2] = 0xBF;
+                        line_utf8+=byte_order_mark[0];
+                        line_utf8+=byte_order_mark[1];
+                        line_utf8+=byte_order_mark[2];
+
+                        // save first char after UTF-16 BOM
+                        if(i == 0){
+                            first_char = line_utf16[2];
+                            cout << "first_char: " << first_char << endl;
+                        }
+                    }
+                    else {
+                        // add the saved first char
+                        if(i == 4){
+                            line_utf8+=first_char;
+                        }
+
+                        line_utf8+=line_utf16[i];
+                    }
+
                 }
             }
+            cout << "line_utf8 size: " << line_utf8.size() << endl;
         }else{
             for (uint i=0; i < line_size; i++) {
                 if(i%2 == 1){
@@ -168,15 +196,6 @@ int CsvFile<T>::ConvertUTF16(){
         line_utf8 = "";
         line_nr++;
     }
-
-    // write utf8 bom header
-    outf.clear();
-    outf.seekp(0, ios::beg);
-    byte_order_mark[0] = 0xEF;
-    byte_order_mark[1] = 0xBB;
-    byte_order_mark[2] = 0xBF;
-    outf << byte_order_mark[0] << byte_order_mark[1] << byte_order_mark[2];
-    outf << first_line << endl;
 
     inf.close();
     outf.close();
