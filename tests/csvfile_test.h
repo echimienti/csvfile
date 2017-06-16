@@ -75,6 +75,11 @@ void clean_test_files() {
     if(out_file_exist == 0) {
         system("rm out.txt");
     }
+
+    const int test_csv_utf8_file_exist = system("ls test.csv.utf8 > /dev/null 2>&1");
+    if(test_csv_utf8_file_exist == 0) {
+        system("rm test.csv.utf8");
+    }
 }
 
 void create_utf16_file(){
