@@ -250,14 +250,15 @@ void CsvFile<T>::read_file() {
             for(int j=0;j<=nr_el_comma;j++) {
                 getline(csvLineStream, element, ',');
 
-                if(str_buf.size() > 0) {
-                    element+=str_buf;
-                }
-
                 // check element starts with double quote and element is not only double quote
                 if(element.find("\"") == 0 && element.size() > 1) {
                     str_buf = element;
                 } else {
+                    str_buf = "";
+                }
+
+                if(str_buf.size() > 0) {
+                    element = str_buf + element;
                     str_buf = "";
                 }
 
