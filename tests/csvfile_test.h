@@ -7,6 +7,8 @@
  *
  */
 #include <vector>
+#include <string.h>
+#include <string>
 
 using namespace std;
 
@@ -73,6 +75,22 @@ void clean_test_files() {
     if(out_file_exist == 0) {
         system("rm out.txt");
     }
+}
+
+void create_utf16_file(){
+    // create an utf-16-le file with one csv entry
+    ofstream outf;
+    outf.open("test.csv", ios::binary);
+    unsigned char byte_order_mark[2];
+
+    byte_order_mark[0] = 0xFF;
+    byte_order_mark[1] = 0xFE;
+    outf << byte_order_mark[0];
+    outf << byte_order_mark[1];
+    outf.close();
+
+    CsvFile<string> csv("test.csv", an_address, 8);
+    csv.write_file("app");
 }
 
 // string tests
@@ -273,6 +291,74 @@ TEST(csv_search_file_doubleTest, csv_search_Neg) {
     string search_found = csv.search_entry("2.99999999999997");
 
     ASSERT_NE(expected_found, search_found) << "Should not find 2.99999999999997";
+
+    clean_test_files();
+}
+
+TEST(csv_byteOrderMarkUTF8, csv_bom_Pos) {
+    clean_test_files();
+
+    string csvLine;
+    ofstream outf;
+    outf.open("test.csv", ios::binary);
+    unsigned char byte_order_mark[3];
+    byte_order_mark[0] = 0xEF;
+    byte_order_mark[1] = 0xBB;
+    byte_order_mark[2] = 0xBF;
+    outf << byte_order_mark[0];
+    outf << byte_order_mark[1];
+    outf << byte_order_mark[2];
+    outf.close();
+
+    CsvFile<string> csv("test.csv", an_address, 8);
+    csv.write_file("app");
+
+    ifstream inf("test.csv");
+    getline(inf, csvLine, '\n');
+    string bom_type = check_byte_order_mark(csvLine.c_str(), csvLine.size());
+
+    ASSERT_EQ("UTF-8", bom_type) << "Should have found UTF-8";
+
+    clean_test_files();
+}
+
+TEST(csv_byteOrderMarkUTF16, csv_bom_Pos) {
+    clean_test_files();
+
+    string csvLine;
+    create_utf16_file();
+
+    ifstream inf("test.csv");
+    getline(inf, csvLine, '\n');
+    string bom_type = check_byte_order_mark(csvLine.c_str(), csvLine.size());
+
+    ASSERT_EQ("UTF-16-LE", bom_type) << "Should have found UTF-16-LE";
+
+    clean_test_files();
+}
+
+TEST(csv_ConvertUTF16, csv_Pos) {
+    clean_test_files();
+
+    string csvLine;
+    create_utf16_file();
+    CsvFile<string> csv("test.csv", 8);
+
+    ifstream inf("test.csv");
+    getline(inf, csvLine, '\n');
+    inf.close();
+    string bom_type = check_byte_order_mark(csvLine.c_str(), csvLine.size());
+
+    ASSERT_EQ("UTF-16-LE", bom_type) << "Should have found UTF-16-LE";
+
+    csv.ConvertUTF16();
+
+    ifstream inf2("test.csv");
+    getline(inf2, csvLine, '\n');
+    inf2.close();
+    string bom_type2 = check_byte_order_mark(csvLine.c_str(), csvLine.size());
+
+    ASSERT_EQ("UTF-8", bom_type2) << "After converting should have found UTF-8";
 
     clean_test_files();
 }
