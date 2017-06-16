@@ -417,7 +417,7 @@ string CsvFile<T>::search_entry(string search_for) {
         for(uint j=0;j<m_csv_vector[i].size();j++) {
             if(m_csv_vector[i][j].find(search_for) != string::npos) {
                 search_found = m_csv_vector[i][j];
-                for(int x=0; x<m_col; x++){
+                for(uint x=0; x<m_csv_vector[i].size(); x++){
                     cout <<  m_csv_vector[i][x] << " ";
                 }
                 cout << endl;
