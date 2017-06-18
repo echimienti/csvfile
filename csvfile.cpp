@@ -236,7 +236,6 @@ void CsvFile<T>::read_file() {
 
     if(bom_type == "UTF-16-LE"){
         ConvertUTF16();
-        read_file();
     }
 
     // While there's still stuff left to read
