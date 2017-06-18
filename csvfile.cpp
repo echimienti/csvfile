@@ -21,6 +21,7 @@
 template <class T>
 void CsvFile<T>::print_entries() {
     /* Print the csv entries from the 2 dimensional vector
+     * with the line number ahead of it
      *
      * @param: no parameters
      * @return: void
@@ -43,6 +44,7 @@ void CsvFile<T>::print_entries() {
 
     while(nr_lines_printed < m_row) {
         for(int i=nr_lines_printed;i < nr_lines_printed + nr_lines_per_time;i++) {
+            cout << i + 1 << " ";
             for(uint j=0;j<m_csv_vector[i].size();j++) {
                 cout << setprecision (15) << m_csv_vector[i][j] << ' ';
             }
