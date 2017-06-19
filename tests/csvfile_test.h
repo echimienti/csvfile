@@ -388,7 +388,6 @@ TEST(csv_ConvertUTF16, csv_Pos) {
                 ASSERT_EQ("11111111", csv.get_m_csv_vector()[x][y]) << "Should have ones!";
             }
         }
-        cout << endl;
     }
 
     clean_test_files();
