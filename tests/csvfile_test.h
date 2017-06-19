@@ -87,15 +87,35 @@ void create_utf16_file(){
     ofstream outf;
     outf.open("test.csv", ios::binary);
     unsigned char byte_order_mark[2];
-
     byte_order_mark[0] = 0xFF;
     byte_order_mark[1] = 0xFE;
+    unsigned char null_byte = 0x00;
+
     outf << byte_order_mark[0];
     outf << byte_order_mark[1];
-    outf.close();
 
-    CsvFile<string> csv("test.csv", an_address, 8);
-    csv.write_file("app");
+    // write 2 utf16 lines
+    for(int row=0; row<2; row++){
+        for(int e=0; e<8; e++){
+            for(int x=0; x<8; x++){
+                outf << '1';
+                outf << null_byte;
+                if(x == 7 && e != 7){
+                    outf << ",";
+                    outf << null_byte;
+                }
+            }
+        }
+
+        outf << "\r";
+        outf << null_byte;
+        outf << "\n";
+        outf << null_byte;
+    }
+
+
+
+    outf.close();
 }
 
 // string tests
@@ -359,6 +379,19 @@ TEST(csv_ConvertUTF16, csv_Pos) {
     string bom_type2 = check_byte_order_mark(csvLine.c_str(), csvLine.size());
 
     ASSERT_EQ("UTF-8", bom_type2) << "After converting should have found UTF-8";
+
+    csv.read_file();
+    for(uint x=0;x<csv.get_m_csv_vector().size(); x++){
+        for(uint y=0; y<csv.get_m_csv_vector()[x].size(); y++){
+            if(x==0 && y ==0){
+                ASSERT_EQ("\xEF\xBB\xBF\xEF\xBB\xBF" "11111111", csv.get_m_csv_vector()[x][y]) << "Should have ones!";
+            }
+            else{
+                ASSERT_EQ("11111111", csv.get_m_csv_vector()[x][y]) << "Should have ones!";
+            }
+        }
+        cout << endl;
+    }
 
     clean_test_files();
 }
