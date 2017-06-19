@@ -113,8 +113,6 @@ void create_utf16_file(){
         outf << null_byte;
     }
 
-
-
     outf.close();
 }
 
