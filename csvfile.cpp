@@ -142,16 +142,15 @@ int CsvFile<T>::ConvertUTF16(){
 
     while( getline(inf, line_utf16, '\n') ){
         uint line_size = line_utf16.size();
-        string bom_type = check_byte_order_mark(line_utf16.c_str(), line_size);
 
-        if(bom_type == "UTF-16-LE"){
+        if(line_nr == 1){
             /* Start from first char, UTF-16-LE has 2 bytes BOM, add 1 to line_size
              *  because UTF-8 BOM has 3 bytes
              */
             for (uint i=0; i < line_size; i++) {
                 // take first of 2 bytes and leave 3 bytes \00 at end of line
                 if(i%2 == 0 && i < line_size - 3){
-                    if(line_nr == 1 && i<3){
+                    if(i<3){
                         byte_order_mark[0] = 0xEF;
                         byte_order_mark[1] = 0xBB;
                         byte_order_mark[2] = 0xBF;
