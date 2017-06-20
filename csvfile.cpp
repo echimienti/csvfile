@@ -115,7 +115,6 @@ int CsvFile<T>::ConvertUTF16(){
 
     string line_utf16;
     string line_utf8;
-    string first_line;
     unsigned char byte_order_mark[3] {0xEF, 0xBB, 0xBF};
     int line_nr = 1;
     ifstream inf(m_filename.c_str());
