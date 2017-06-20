@@ -116,7 +116,6 @@ int CsvFile<T>::ConvertUTF16(){
     string line_utf16;
     string line_utf8;
     string first_line;
-    char first_char;
     unsigned char byte_order_mark[3];
     ifstream inf(m_filename.c_str());
 
@@ -144,10 +143,7 @@ int CsvFile<T>::ConvertUTF16(){
         uint line_size = line_utf16.size();
 
         if(line_nr == 1){
-            /* Start from first char, UTF-16-LE has 2 bytes BOM
-             * UTF-8 BOM has 3 bytes
-             */
-
+            // prepare UTF-8 byte order mark
             byte_order_mark[0] = 0xEF;
             byte_order_mark[1] = 0xBB;
             byte_order_mark[2] = 0xBF;
@@ -155,6 +151,9 @@ int CsvFile<T>::ConvertUTF16(){
             line_utf8+=byte_order_mark[1];
             line_utf8+=byte_order_mark[2];
 
+            /* Start from first char, UTF-16-LE has 2 bytes BOM
+             * UTF-8 BOM has 3 bytes
+             */
             for (uint i=2; i < line_size; i++) {
                 // take first of 2 bytes and leave 2 bytes \r\00 at end of line
                 if(i%2 == 0 && i < line_size - 2){
@@ -162,8 +161,7 @@ int CsvFile<T>::ConvertUTF16(){
                     // save first char after byte 0 and 1 which is UTF-16 BOM
                     // and write it to the 4th position als UTF-8 BOM uses byte 0 till 2
                     if(i == 3){
-                        first_char = line_utf16[2];
-                         line_utf8+=first_char;
+                        line_utf8+=line_utf16[2];
                     }
 
                     line_utf8+=line_utf16[i];
@@ -177,10 +175,6 @@ int CsvFile<T>::ConvertUTF16(){
                     line_utf8+=line_utf16[i];
                 }
             }
-        }
-
-        if(line_nr == 1){
-            first_line = line_utf8;
         }
 
         // no new line at end of file
