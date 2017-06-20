@@ -116,7 +116,8 @@ int CsvFile<T>::ConvertUTF16(){
     string line_utf16;
     string line_utf8;
     string first_line;
-    unsigned char byte_order_mark[3];
+    unsigned char byte_order_mark[3] {0xEF, 0xBB, 0xBF};
+    int line_nr = 1;
     ifstream inf(m_filename.c_str());
 
     // If we couldn't open the input file stream for reading
@@ -137,29 +138,24 @@ int CsvFile<T>::ConvertUTF16(){
         exit(1);
     }
 
-    int line_nr = 1;
+    // prepare UTF-8 byte order mark
+    line_utf8+=byte_order_mark[0];
+    line_utf8+=byte_order_mark[1];
+    line_utf8+=byte_order_mark[2];
 
     while( getline(inf, line_utf16, '\n') ){
         uint line_size = line_utf16.size();
 
-        if(line_nr == 1){
-            // prepare UTF-8 byte order mark
-            byte_order_mark[0] = 0xEF;
-            byte_order_mark[1] = 0xBB;
-            byte_order_mark[2] = 0xBF;
-            line_utf8+=byte_order_mark[0];
-            line_utf8+=byte_order_mark[1];
-            line_utf8+=byte_order_mark[2];
-
+        for (uint i=0; i < line_size; i++) {
             /* Start from first char, UTF-16-LE has 2 bytes BOM
              * UTF-8 BOM has 3 bytes
+             * take first of 2 bytes of utf16 and leave 2 bytes \r\00
+             * at end of line
              */
-            for (uint i=2; i < line_size; i++) {
-                // take first of 2 bytes and leave 2 bytes \r\00 at end of line
-                if(i%2 == 0 && i < line_size - 2){
-
+            if(line_nr == 1){
+                if(i > 1 && i%2 == 0 && i < line_size - 2){
                     // save first char after byte 0 and 1 which is UTF-16 BOM
-                    // and write it to the 4th position als UTF-8 BOM uses byte 0 till 2
+                    // and write it to the 4th position as UTF-8 BOM uses byte 0 till 2
                     if(i == 3){
                         line_utf8+=line_utf16[2];
                     }
@@ -167,9 +163,7 @@ int CsvFile<T>::ConvertUTF16(){
                     line_utf8+=line_utf16[i];
                 }
             }
-        }
-        else{
-            for (uint i=0; i < line_size; i++) {
+            else{
                 // take second of 2 bytes and leave 3 bytes \00 at end of line
                 if(i%2 == 1 && i < line_size - 3){
                     line_utf8+=line_utf16[i];
