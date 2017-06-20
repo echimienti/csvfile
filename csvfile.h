@@ -84,6 +84,7 @@ public:
     //! Update a field in 2 dimensional vector
     void update_field(int);
 
+    //! Converts UTF16-LE file to UTF-8 file
     int ConvertUTF16();
 };
 
