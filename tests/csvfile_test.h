@@ -382,7 +382,7 @@ TEST(csv_ConvertUTF16, csv_Pos) {
     for(uint x=0;x<csv.get_m_csv_vector().size(); x++){
         for(uint y=0; y<csv.get_m_csv_vector()[x].size(); y++){
             if(x==0 && y ==0){
-                ASSERT_EQ("\xEF\xBB\xBF\xEF\xBB\xBF" "11111111", csv.get_m_csv_vector()[x][y]) << "Should have ones!";
+                ASSERT_EQ("\xEF\xBB\xBF" "11111111", csv.get_m_csv_vector()[x][y]) << "Should have ones!";
             }
             else{
                 ASSERT_EQ("11111111", csv.get_m_csv_vector()[x][y]) << "Should have ones!";
