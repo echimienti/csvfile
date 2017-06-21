@@ -9,12 +9,12 @@
  */
 
 #include "csvfile.h"
+#include "convert_utf16.cpp"
 #include <stdexcept>
 #include <sstream>
 #include <string>
 #include <iomanip>
 #include <limits>
-#include "common_utils.cpp"
 #include <string.h>
 
 
@@ -110,86 +110,6 @@ string check_byte_order_mark(const char *data, size_t size){
     return "Could not determine";
 }
 
-template<class T>
-int CsvFile<T>::ConvertUTF16(){
-
-    string line_utf16;
-    string line_utf8;
-    unsigned char byte_order_mark[3] {0xEF, 0xBB, 0xBF};
-    int line_nr = 1;
-    ifstream inf(m_filename.c_str());
-
-    // If we couldn't open the input file stream for reading
-    if (!inf) {
-        // Print an error and exit
-        cerr << m_filename << " could not be opened for reading!" << endl;
-        exit(1);
-    }
-
-    ofstream outf;
-
-    cout << "Opening file in out mode for converting" << endl;
-    outf.open((m_filename+".utf8").c_str(), ios::binary);
-
-    if (!outf) {
-        // Print an error and exit
-        cerr << "m_csv_vector.csv could not be opened for converting!" << endl;
-        exit(1);
-    }
-
-    // prepare UTF-8 byte order mark
-    line_utf8+=byte_order_mark[0];
-    line_utf8+=byte_order_mark[1];
-    line_utf8+=byte_order_mark[2];
-
-    while( getline(inf, line_utf16, '\n') ){
-        uint line_size = line_utf16.size();
-
-        for (uint i=0; i < line_size; i++) {
-            /* Start from first char, UTF-16-LE has 2 bytes BOM
-             * UTF-8 BOM has 3 bytes
-             * take first of 2 bytes of utf16 and leave 2 bytes \r\00
-             * at end of line
-             */
-            if(line_nr == 1){
-                if(i > 1 && i%2 == 0 && i < line_size - 2){
-                    // save first char after byte 0 and 1 which is UTF-16 BOM
-                    // and write it to the 4th position as UTF-8 BOM uses byte 0 till 2
-                    if(i == 3){
-                        line_utf8+=line_utf16[2];
-                    }
-
-                    line_utf8+=line_utf16[i];
-                }
-            }
-            else{
-                // take second of 2 bytes and leave 3 bytes \00 at end of line
-                if(i%2 == 1 && i < line_size - 3){
-                    line_utf8+=line_utf16[i];
-                }
-            }
-        }
-
-        // no new line at end of file
-        if(!inf.eof()){
-            outf << line_utf8 << endl;
-        }
-
-        //reset line_utf8 for next line
-        line_utf8 = "";
-        line_nr++;
-    }
-
-    inf.close();
-    outf.close();
-
-    // rename new utf8 file to the m_filename
-    copyFile((m_filename+".utf8").c_str(), m_filename.c_str(), "move utf8 file to use");
-    sleep(500);
-
-    return 0;
-}
-
 template <class T>
 void CsvFile<T>::read_file() {
     /* Reads in the csv entries from the csv file and pushes them into a
@@ -218,7 +138,8 @@ void CsvFile<T>::read_file() {
     inf.seekg(0, ios::beg);
 
     if(bom_type == "UTF-16-LE"){
-        ConvertUTF16();
+        UTF16 utf16(m_filename.c_str(), (m_filename+".utf8").c_str());
+        utf16.ConvertUTF16();
     }
 
     // While there's still stuff left to read
