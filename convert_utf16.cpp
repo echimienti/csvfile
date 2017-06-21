@@ -11,6 +11,11 @@ using namespace std;
 
 
 int UTF16::ConvertUTF16ToUTF8(){
+    /* Converts an UTF16-LE file to UTF-8
+     *
+     * @param: no parameters
+     * @return: int
+     */
 
     string line_utf16;
     string line_utf8;
@@ -90,7 +95,12 @@ int UTF16::ConvertUTF16ToUTF8(){
 }
 
 void create_utf16_file(){
-    // create an utf-16-le file with one csv entry
+    /* create an utf-16-le file with 2 csv entries
+     * containing 2 rows with 8 times 11111111
+     *
+     * @param: no parameters
+     * @return: void
+     */
     ofstream outf;
     outf.open("test.csv", ios::binary);
     unsigned char byte_order_mark[2];

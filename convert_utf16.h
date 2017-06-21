@@ -13,7 +13,9 @@
 #include <string>
 #include "common_utils.cpp"
 
-
+/*! UTF16 Class: a class provides functions for doing operations
+ * UTF16 files
+ */
 class UTF16 {
 private:
     string m_utf16_filename;
@@ -26,8 +28,10 @@ public:
 
     }
 
+    //! Converts UTF16-LE file to UTF-8 file
     int ConvertUTF16ToUTF8();
 
+    //! Creates UTF16-LE file
     void create_utf16_file();
 };
 
