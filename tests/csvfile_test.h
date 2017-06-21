@@ -41,10 +41,10 @@ vector<int> num_entry2 {6, 7, 8, 9, 10};
 vector< vector <int> > a_num_vec { num_entry1 };
 
 vector<double> double_entry1 {1.99999999999996,
-                           2.99999999999996,
-                           3.99999999999996,
-                           4.99999999999996,
-                           5.99999999999996};
+                              2.99999999999996,
+                              3.99999999999996,
+                              4.99999999999996,
+                              5.99999999999996};
 
 vector< vector <double> > a_double_vec { double_entry1 };
 
@@ -369,7 +369,8 @@ TEST(csv_ConvertUTF16, csv_Pos) {
 
     ASSERT_EQ("UTF-16-LE", bom_type) << "Should have found UTF-16-LE";
 
-    csv.ConvertUTF16();
+    UTF16 utf16("test.csv", "test.csv.utf8");
+    utf16.ConvertUTF16();
 
     ifstream inf2("test.csv");
     getline(inf2, csvLine, '\n');
