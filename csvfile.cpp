@@ -15,7 +15,6 @@
 #include <string>
 #include <iomanip>
 #include <limits>
-#include <string.h>
 
 
 template <class T>
@@ -82,32 +81,6 @@ int CsvFile<T>::count_csv_file_lines(){
             ++lines_count;
 
     return lines_count;
-}
-
-const char *UTF_16_BE_BOM = "\xFE\xFF";
-const char *UTF_16_LE_BOM = "\xFF\xFE";
-const char *UTF_8_BOM = "\xEF\xBB\xBF";
-const char *UTF_32_BE_BOM = "\x00\x00\xFE\xFF";
-const char *UTF_32_LE_BOM = "\xFF\xFE\x00\x00";
-
-string check_byte_order_mark(const char *data, size_t size){
-    if (size >= 3) {
-        if (memcmp(data, UTF_8_BOM, 3) == 0)
-            return "UTF-8";
-    }
-    if (size >= 4) {
-        if (memcmp(data, UTF_32_LE_BOM, 4) == 0)
-            return "UTF-32-LE";
-        if (memcmp(data, UTF_32_BE_BOM, 4) == 0)
-            return "UTF-32-BE";
-    }
-    if (size >= 2) {
-        if (memcmp(data, UTF_16_LE_BOM, 2) == 0)
-            return "UTF-16-LE";
-        if (memcmp(data, UTF_16_BE_BOM, 2) == 0)
-            return "UTF-16-BE";
-    }
-    return "Could not determine";
 }
 
 template <class T>

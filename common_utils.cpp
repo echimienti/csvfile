@@ -8,8 +8,36 @@
 
 #include <iostream>
 #include <algorithm>
+#include <string.h>
 
 using namespace std;
+
+
+const char *UTF_16_BE_BOM = "\xFE\xFF";
+const char *UTF_16_LE_BOM = "\xFF\xFE";
+const char *UTF_8_BOM = "\xEF\xBB\xBF";
+const char *UTF_32_BE_BOM = "\x00\x00\xFE\xFF";
+const char *UTF_32_LE_BOM = "\xFF\xFE\x00\x00";
+
+string check_byte_order_mark(const char *data, size_t size){
+    if (size >= 3) {
+        if (memcmp(data, UTF_8_BOM, 3) == 0)
+            return "UTF-8";
+    }
+    if (size >= 4) {
+        if (memcmp(data, UTF_32_LE_BOM, 4) == 0)
+            return "UTF-32-LE";
+        if (memcmp(data, UTF_32_BE_BOM, 4) == 0)
+            return "UTF-32-BE";
+    }
+    if (size >= 2) {
+        if (memcmp(data, UTF_16_LE_BOM, 2) == 0)
+            return "UTF-16-LE";
+        if (memcmp(data, UTF_16_BE_BOM, 2) == 0)
+            return "UTF-16-BE";
+    }
+    return "Could not determine";
+}
 
 bool is_number(const string& s)
     /* Check if string is a number
@@ -65,8 +93,7 @@ void copyFile(string src_file, string dst_file, string operation) {
     cout << "Successfully made " + operation + " " + src_file + " to " + dst_file << endl;
 }
 
-void sleep(int milliseconds)
-{
+void sleep(int milliseconds) {
     clock_t time_end;
     time_end = clock() + milliseconds * CLOCKS_PER_SEC/1000;
     while (clock() < time_end)
