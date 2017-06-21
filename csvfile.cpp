@@ -139,7 +139,7 @@ void CsvFile<T>::read_file() {
 
     if(bom_type == "UTF-16-LE"){
         UTF16 utf16(m_filename.c_str(), (m_filename+".utf8").c_str());
-        utf16.ConvertUTF16();
+        utf16.ConvertUTF16ToUTF8();
     }
 
     // While there's still stuff left to read

@@ -10,7 +10,7 @@
 using namespace std;
 
 
-int UTF16::ConvertUTF16(){
+int UTF16::ConvertUTF16ToUTF8(){
 
     string line_utf16;
     string line_utf8;

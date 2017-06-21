@@ -320,7 +320,7 @@ TEST(csv_byteOrderMarkUTF16, csv_bom_Pos) {
     clean_test_files();
 }
 
-TEST(csv_ConvertUTF16, csv_Pos) {
+TEST(csv_ConvertUTF16ToUTF8, csv_Pos) {
     clean_test_files();
 
     string csvLine;
@@ -335,7 +335,7 @@ TEST(csv_ConvertUTF16, csv_Pos) {
     ASSERT_EQ("UTF-16-LE", bom_type) << "Should have found UTF-16-LE";
 
     UTF16 utf16("test.csv", "test.csv.utf8");
-    utf16.ConvertUTF16();
+    utf16.ConvertUTF16ToUTF8();
 
     ifstream inf2("test.csv");
     getline(inf2, csvLine, '\n');

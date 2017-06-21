@@ -26,7 +26,7 @@ public:
 
     }
 
-    int ConvertUTF16();
+    int ConvertUTF16ToUTF8();
 
     void create_utf16_file();
 };
