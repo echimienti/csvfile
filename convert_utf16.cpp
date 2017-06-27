@@ -69,6 +69,10 @@ int UTF16::ConvertUTF16ToUTF8(){
             else{
                 // take second of 2 bytes and leave 3 bytes \00 at end of line
                 if(i%2 == 1 && i < line_size - 3){
+                    if(line_utf16[i] == 0x13){
+                        line_utf16[i] = '-';
+                    }
+
                     line_utf8+=line_utf16[i];
                 }
             }
