@@ -252,8 +252,9 @@ void CsvFile<T>::write_file(string mode) {
         m_row = m_csv_vector.size();
 
         for(int i=0;i<m_row;i++) {
-            for(int j=0;j<m_col;j++) {
-                if(j < m_col - 1){
+            int col = m_csv_vector[i].size();
+            for(int j=0;j<col;j++) {
+                if(j < col - 1){
                     outf << m_csv_vector[i][j] << ",";
                 }
                 else {
