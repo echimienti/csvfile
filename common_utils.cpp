@@ -9,15 +9,8 @@
 #include <iostream>
 #include <algorithm>
 #include <string.h>
+#include "common_utils.h"
 
-using namespace std;
-
-
-const char *UTF_16_BE_BOM = "\xFE\xFF";
-const char *UTF_16_LE_BOM = "\xFF\xFE";
-const char *UTF_8_BOM = "\xEF\xBB\xBF";
-const char *UTF_32_BE_BOM = "\x00\x00\xFE\xFF";
-const char *UTF_32_LE_BOM = "\xFF\xFE\x00\x00";
 
 string check_byte_order_mark(const char *data, size_t size){
     if (size >= 3) {
