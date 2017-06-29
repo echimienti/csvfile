@@ -115,7 +115,7 @@ void CsvFile<T>::read_file() {
         utf16.ConvertUTF16ToUTF8();
     }
 
-    // While there's still stuff left to read
+    // For each line extract the elements
     while (getline(inf, csvLine, '\n')) {
         if (csvLine.size() != 0) {
             int nr_el_comma = count(csvLine.begin(), csvLine.end(), ',');
