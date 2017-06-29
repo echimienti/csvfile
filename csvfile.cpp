@@ -127,14 +127,25 @@ void CsvFile<T>::read_file() {
                 getline(csvLineStream, element, ',');
 
                 // check element starts with double quote and element is not only double quote
-                if(element.find("\"") == 0 && element.size() > 1) {
-                    str_buf = element;
-                } else {
-                    str_buf = "";
+                size_t n_dquotes = count(element.begin(), element.end(), '"');
+                if(n_dquotes > 0 && element.size() > 0) {
+                    // if two consecutive elements contain double quotes
+                    // handle "xxxx,xxxx",
+                    if(str_buf.size() > 0){
+                        str_buf = str_buf + "," + element;
+                        element = str_buf;
+                        str_buf = "";
+                    }
+                    else{
+                        str_buf = str_buf + element;
+                    }
                 }
-
-                if(str_buf.size() > 0) {
-                    element = str_buf + element;
+                else {
+                    // if next elements do not contain double quotes
+                    // handle "xxxx,xxxx,,,,
+                    if(str_buf.size() > 0){
+                        element+=str_buf;
+                    }
                     str_buf = "";
                 }
 
