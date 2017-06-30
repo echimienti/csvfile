@@ -30,6 +30,7 @@ void CsvFile<T>::print_entries() {
     int nr_lines_per_time;
     int nr_lines_printed = 0;
 
+    // Ask user how many lines per time to print when more than 20 rows
     if(m_row > 20) {
         while(!is_number(input_lines)){
             input_lines = get_input("How many lines per time to print, enter a nr: ");
@@ -41,10 +42,13 @@ void CsvFile<T>::print_entries() {
 
     nr_lines_per_time = stoi(input_lines);
 
+    // printout the rows with elements
     while(nr_lines_printed < m_row) {
         for(int i=nr_lines_printed;i < nr_lines_printed + nr_lines_per_time;i++) {
+            // add line number in front of each line
             cout << i + 1 << " ";
-            for(uint j=0;j<m_csv_vector[i].size();j++) {
+            // print each element
+            for(uint j=0;j<=m_csv_vector[i].size();j++) {
                 cout << setprecision (15) << m_csv_vector[i][j] << " ";
             }
             cout << endl;
@@ -52,10 +56,12 @@ void CsvFile<T>::print_entries() {
 
         nr_lines_printed += nr_lines_per_time;
 
+        // handle when last amount of lines is left is less than nr_lines_per_time
         if(nr_lines_printed + nr_lines_per_time >= m_row){
             nr_lines_per_time = m_row - nr_lines_printed;
         }
 
+        // wait for user before continue printing
         if(m_row > 20) {
             scrolling = get_input("Press any key for next lines or q to quit");
         }
