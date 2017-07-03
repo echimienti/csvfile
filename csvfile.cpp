@@ -48,7 +48,7 @@ void CsvFile<T>::print_entries() {
             // add line number in front of each line
             cout << i + 1 << " ";
             // print each element
-            for(uint j=0;j<=m_csv_vector[i].size();j++) {
+            for(uint j=0;j<m_csv_vector[i].size();j++) {
                 cout << setprecision (15) << m_csv_vector[i][j] << " ";
             }
             cout << endl;
