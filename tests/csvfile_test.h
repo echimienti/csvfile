@@ -22,7 +22,27 @@ vector<string> an_entry {"Piet",
                          "pietje@puk.nl"
 };
 
-vector<string> an_entry_var {"\"Pietje, Pukkie\"",
+vector<string> element_with_comma_entry {"\"Pietje, Pukkie\"",
+                             "Puk",
+                             "Pukstraat 1",
+                             "1111 PP",
+                             "Pukstad",
+                             "011 11111111",
+                             "06123456789",
+                             "piet@puk.nl"
+};
+
+vector<string> single_element_with_quotes_entry {"\"Pietje, Pukkie",
+                             "Puk",
+                             "Pukstraat 1",
+                             "1111 PP",
+                             "Pukstad",
+                             "011 11111111",
+                             "06123456789",
+                             "piet@puk.nl"
+};
+
+vector<string> consequtive_elements_with_quotes_entry {"Pietje\",\"Pukkie",
                              "Puk",
                              "Pukstraat 1",
                              "1111 PP",
@@ -104,10 +124,48 @@ TEST(csv_write_read_file_stringTest, csv_write_readPos) {
     clean_test_files();
 }
 
-TEST(csv_multipleLine_quotedStringTest, csv_search_Pos) {
+TEST(csv_element_quotes_with_comma_test, csv_write_read_pos) {
     clean_test_files();
 
-    an_address.push_back(an_entry_var);
+    an_address.push_back(element_with_comma_entry);
+
+    CsvFile<string> csv("test.csv", an_address, 8);
+    csv.write_file("in");
+
+    system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
+
+    string act_lines = system_cmd_output();
+
+    ASSERT_EQ(csv.get_m_csv_vector().size(), 2) << "Expected 2 rows written/read";
+    ASSERT_EQ(act_lines, "2") << "Expected 2 rows written/read";
+
+    an_address.pop_back();
+    clean_test_files();
+}
+
+TEST(csv_single_element_with_quotes_test, csv_write_read_pos) {
+    clean_test_files();
+
+    an_address.push_back(single_element_with_quotes_entry);
+
+    CsvFile<string> csv("test.csv", an_address, 8);
+    csv.write_file("in");
+
+    system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
+
+    string act_lines = system_cmd_output();
+
+    ASSERT_EQ(csv.get_m_csv_vector().size(), 2) << "Expected 2 rows written/read";
+    ASSERT_EQ(act_lines, "2") << "Expected 2 rows written/read";
+
+    an_address.pop_back();
+    clean_test_files();
+}
+
+TEST(csv_two_consequtive_elements_with_quotes_test, csv_write_read_pos) {
+    clean_test_files();
+
+    an_address.push_back(consequtive_elements_with_quotes_entry);
 
     CsvFile<string> csv("test.csv", an_address, 8);
     csv.write_file("in");
@@ -165,8 +223,40 @@ TEST(csv_search_file_quotedStringTest, csv_search_Pos) {
     clean_test_files();
 }
 
+TEST(csv_search_single_element_with_quotes_test, csv_search_Pos) {
+    clean_test_files();
+
+    an_address.push_back(single_element_with_quotes_entry);
+
+    CsvFile<string> csv("test.csv", an_address, 8);
+    csv.write_file("in");
+    string expected_found = "\"Pietje, Pukkie";
+    string search_found = csv.search_entry("Pietje");
+
+    ASSERT_EQ(expected_found, search_found) << "Should have found \"Pietje, Pukkie";
+
+    an_address.pop_back();
+    clean_test_files();
+}
+
+TEST(csv_search_two_consequtive_elements_with_quotes_test, csv_search_Pos) {
+    clean_test_files();
+
+    an_address.push_back(consequtive_elements_with_quotes_entry);
+
+    CsvFile<string> csv("test.csv", an_address, 8);
+    csv.write_file("in");
+    string expected_found = "Pietje\",\"Pukkie";
+    string search_found = csv.search_entry("Pietje");
+
+    ASSERT_EQ(expected_found, search_found) << "Should have found Pietje\",\"Pukkie";
+
+    an_address.pop_back();
+    clean_test_files();
+}
+
 // integer tests
-TEST(csv_write_read_file_intTest, csv_write_readPos) {
+TEST(csv_write_read_file_int_test, csv_write_read_pos) {
 
     clean_test_files();
 
