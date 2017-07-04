@@ -155,6 +155,8 @@ void CsvFile<T>::read_file() {
                     // handle "xxxx,xxxx,,,,
                     if(str_buf.size() > 0){
                         element+=str_buf;
+                        //decrement nr of element for not loosing an element
+                        j--;
                     }
                     str_buf = "";
                 }
