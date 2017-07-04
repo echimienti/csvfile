@@ -142,6 +142,10 @@ void CsvFile<T>::read_file() {
                         element = str_buf;
                         str_buf = "";
                     }
+                    // if last element in row has quotes
+                    else if(j==nr_el_comma){
+                        str_buf = "";
+                    }
                     else{
                         str_buf = str_buf + element;
                     }
