@@ -147,16 +147,14 @@ void CsvFile<T>::read_file() {
                         str_buf = "";
                     }
                     else{
-                        str_buf = str_buf + element;
+                        str_buf+=element;
                     }
                 }
                 else {
                     // if next elements do not contain double quotes
                     // handle "xxxx,xxxx,,,,
                     if(str_buf.size() > 0){
-                        element+=str_buf;
-                        //decrement nr of element for not loosing an element
-                        j--;
+                        element = str_buf + "," + element;
                     }
                     str_buf = "";
                 }
