@@ -52,6 +52,16 @@ vector<string> consequtive_elements_with_quotes_entry {"Pietje\",\"Pukkie",
                              "piet@puk.nl"
 };
 
+vector<string> last_element_with_quotes_entry {"Pietje",
+                             "Puk",
+                             "Pukstraat 1",
+                             "1111 PP",
+                             "Pukstad",
+                             "011 11111111",
+                             "06123456789",
+                             "\"piet@puk.nl"
+};
+
 vector< vector <string> > an_address { an_entry };
 
 vector<int> num_entry1 {1, 2, 3, 4, 5};
@@ -181,6 +191,25 @@ TEST(csv_two_consequtive_elements_with_quotes_test, csv_write_read_pos) {
     clean_test_files();
 }
 
+TEST(csv_last_element_with_quotes_test, csv_write_read_pos) {
+    clean_test_files();
+
+    an_address.push_back(last_element_with_quotes_entry);
+
+    CsvFile<string> csv("test.csv", an_address, 8);
+    csv.write_file("in");
+
+    system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
+
+    string act_lines = system_cmd_output();
+
+    ASSERT_EQ(csv.get_m_csv_vector().size(), 2) << "Expected 2 rows written/read";
+    ASSERT_EQ(act_lines, "2") << "Expected 2 rows written/read";
+
+    an_address.pop_back();
+    clean_test_files();
+}
+
 TEST(csv_search_file_string_test, csv_search_pos) {
     clean_test_files();
 
@@ -250,6 +279,22 @@ TEST(csv_search_two_consequtive_elements_with_quotes_test, csv_search_Pos) {
     string search_found = csv.search_entry("Pietje");
 
     ASSERT_EQ(expected_found, search_found) << "Should have found Pietje\",\"Pukkie";
+
+    an_address.pop_back();
+    clean_test_files();
+}
+
+TEST(csv_search_last_element_with_quotes_test, csv_search_Pos) {
+    clean_test_files();
+
+    an_address.push_back(last_element_with_quotes_entry);
+
+    CsvFile<string> csv("test.csv", an_address, 8);
+    csv.write_file("in");
+    string expected_found = "\"piet@puk.nl";
+    string search_found = csv.search_entry("puk.nl");
+
+    ASSERT_EQ(expected_found, search_found) << "Should have found \"piet@puk.nl";
 
     an_address.pop_back();
     clean_test_files();
