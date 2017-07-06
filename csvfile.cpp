@@ -566,22 +566,22 @@ void CsvFile<T>::delete_modify(string mode, string csvSubject) {
             }
         }
         else {
-            if(mode == "delete"){
-                for(uint j=0;j<m_csv_vector[line_nr - 1].size();j++) {
-                    cout << m_csv_vector[line_nr - 1][j] << ' ';
-                }
-                string confirm = get_input("Do you want to " + mode + " line: " + to_string(line_nr) + " ?\n"
-                                           "Confirm " + mode + " y/n or q to quit:");
+            for(uint j=0;j<m_csv_vector[line_nr - 1].size();j++) {
+                cout << m_csv_vector[line_nr - 1][j] << ' ';
+            }
+            string confirm = get_input("\nDo you want to " + mode + " line: " + to_string(line_nr) + " ?\n"
+                                       "Confirm " + mode + " y/n or q to quit:");
 
-                if(confirm == "y") {
+            if(confirm == "y") {
+                if(mode == "delete"){
                     m_csv_vector.erase(m_csv_vector.begin() + (line_nr - 1));
                 }
-                else if(confirm == "n" or confirm == "q") {
-                    return;
+                else if (mode == "modify"){
+                    update_field(line_nr - 1);
                 }
             }
-            else if (mode == "modify"){
-                update_field(line_nr - 1);
+            else if(confirm == "n" or confirm == "q") {
+                return;
             }
         }
     }
