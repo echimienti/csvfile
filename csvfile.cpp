@@ -450,7 +450,7 @@ void CsvFile<T>::update_field(int row) {
      */
     for(uint j=0;j<m_csv_vector[row].size();j++) {
         cout << m_csv_vector[row][j] << endl;
-        string confirm = get_input("Do you want to modify this string?\n"
+        string confirm = get_input("\nDo you want to modify this string?\n"
                                    "Confirm y/n or quit: q:");
 
         if(confirm == "y") {
@@ -541,7 +541,7 @@ void CsvFile<T>::delete_modify(string mode, string csvSubject) {
                     cout << m_csv_vector[i][j] << ' ';
                 }
 
-                string confirm_l = get_input("Do you want to " + mode + " this line?\n"
+                string confirm_l = get_input("\nDo you want to " + mode + " this line?\n"
                                              "Confirm " + mode + ": y/n/ or quit: q:");
 
                 if(confirm_l == "y") {
