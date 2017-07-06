@@ -565,9 +565,9 @@ int CsvFile<T>::delete_modify(string mode, string csvSubject) {
                     else if (mode == "modify"){
                         update_field(i);
                     }
-                    else {
-                        throw("Error invalid mode!");
-                    }
+                }
+                if(confirm_l == "n") {
+                    continue;
                 }
                 if(confirm_l == "q") {
                     break;
@@ -592,10 +592,17 @@ int CsvFile<T>::delete_modify(string mode, string csvSubject) {
                 }
             }
             else if(confirm == "n" or confirm == "q") {
-                return;
+                return 0;
             }
         }
     }
+    else if(confirm == "n"){
+        return 1;
+    }
+    else{
+        delete_modify(mode, csvSubject);
+    }
+    return 0;
 }
 
 template class CsvFile<string>;
