@@ -73,7 +73,7 @@ public:
     string search_entry(string);
 
     //! Deletes row from 2 dimensional vector
-    void delete_modify(string, string);
+    int delete_modify(string, string);
 
     //! Backs up csv file
     void backup_data();

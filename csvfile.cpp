@@ -523,12 +523,12 @@ void CsvFile<double>::update_field(int row) {
 }
 
 template <class T>
-void CsvFile<T>::delete_modify(string mode, string csvSubject) {
+int CsvFile<T>::delete_modify(string mode, string csvSubject) {
     /* Deletes or modifies a row in the 2 dimensional array
      *
      * @param: mode: delete or modify
      * @param: csvSubject: the subject of the csv file ( e.g. addresses )
-     * @return: void
+     * @return: int
      */
     string confirm = get_input("Do you want to " + mode + " " + csvSubject +
                                " ?\nConfirm " + mode + " y/n:");
