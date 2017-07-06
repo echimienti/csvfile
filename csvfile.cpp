@@ -530,6 +530,17 @@ int CsvFile<T>::delete_modify(string mode, string csvSubject) {
      * @param: csvSubject: the subject of the csv file ( e.g. addresses )
      * @return: int
      */
+
+    try {
+        if(mode != "delete" && mode != "modify"){
+            throw logic_error("Error invalid mode: " + mode);
+        }
+    }
+    catch(logic_error const& err){
+        cout << err.what() << endl;
+        return -1;
+    }
+
     string confirm = get_input("Do you want to " + mode + " " + csvSubject +
                                " ?\nConfirm " + mode + " y/n:");
 
