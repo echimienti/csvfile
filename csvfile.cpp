@@ -368,20 +368,26 @@ int CsvFile<T>::backup_data() {
      * @param: no parameters
      * @return: void
      */
-    const int check_err = system("ls backup > /dev/null 2>&1");
+    const int check_out = system("ls backup > /dev/null 2>&1");
 
     // if backup dir does not exist create it first
-    if(check_err != 0) {
-        const int dir_err = system("mkdir backup");
+    if(check_out != 0) {
+        try {
+            const int dir_err = system("mkdir backup");
 
-        if(-1 == dir_err) {
-            cout << "Error creating directory!" << endl;
-            exit(1);
+            if(dir_err != 0) {
+                throw runtime_error("Error creating directory!");
+                return -1;
+            }
+        }
+        catch (const runtime_error& e) {
+            cout << "Exception: " << e.what() << "!\n";
         }
     }
 
     // backup m_filename
     copyFile(m_filename, "backup/" + m_filename + ".bkup", "backup of");
+    return 0;
 }
 
 template <class T>
