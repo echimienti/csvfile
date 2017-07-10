@@ -76,7 +76,7 @@ public:
     int delete_modify(string, string);
 
     //! Backs up csv file
-    void backup_data();
+    int backup_data();
 
     //! Restores from backup file
     int restore_data();
