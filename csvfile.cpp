@@ -99,14 +99,8 @@ void CsvFile<T>::read_file() {
      */
     string csvLine;
     string element;
-    ifstream inf(m_filename.c_str());
 
-    // If we couldn't open the input file stream for reading
-    if (!inf) {
-        // Print an error and exit
-        cerr << m_filename << " could not be opened for reading!" << endl;
-        exit(1);
-    }
+    ifstream inf = openFileForRead(m_filename);
 
     //check if need to convert from utf-16
     getline(inf, csvLine, '\n');
@@ -180,14 +174,8 @@ void CsvFile<int>::read_file() {
      */
     string csvLine;
     string element;
-    ifstream inf(m_filename.c_str());
 
-    // If we couldn't open the input file stream for reading
-    if (!inf) {
-        // Print an error and exit
-        cerr << m_filename << " could not be opened for reading!" << endl;
-        exit(1);
-    }
+    ifstream inf = openFileForRead(m_filename);
 
     // While there's still stuff left to read
     while (getline(inf, csvLine, '\n')) {
@@ -214,14 +202,8 @@ void CsvFile<double>::read_file() {
      */
     string csvLine;
     string element;
-    ifstream inf(m_filename.c_str());
 
-    // If we couldn't open the input file stream for reading
-    if (!inf) {
-        // Print an error and exit
-        cerr << m_filename << " could not be opened for reading!" << endl;
-        exit(1);
-    }
+    ifstream inf = openFileForRead(m_filename);
 
     // While there's still stuff left to read
     while (getline(inf, csvLine, '\n')) {
