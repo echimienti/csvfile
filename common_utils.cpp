@@ -86,6 +86,22 @@ void copyFile(string src_file, string dst_file, string operation) {
     cout << "Successfully made " + operation + " " + src_file + " to " + dst_file << endl;
 }
 
+ifstream openFileForRead(string filename){
+    ifstream inf(filename.c_str());
+
+    // If we couldn't open the input file stream for reading
+    try {
+        if (!inf) {
+            // Throw an error
+            throw ios_base::failure("*** " + filename + " could not be opened for reading!\n");
+        }
+    }
+    catch (const std::ios_base::failure& e) {
+        cout << "Exception: " << e.what() << "!\n";
+    }
+    return inf;
+}
+
 void sleep(int milliseconds) {
     clock_t time_end;
     time_end = clock() + milliseconds * CLOCKS_PER_SEC/1000;
