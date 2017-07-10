@@ -19,26 +19,28 @@ int UTF16::ConvertUTF16ToUTF8(){
 
     string line_utf16;
     string line_utf8;
-
-    int line_nr = 1;
+    ofstream outf;
     ifstream inf(m_utf16_filename.c_str());
 
-    // If we couldn't open the input file stream for reading
-    if (!inf) {
-        // Print an error and exit
-        cerr << m_utf16_filename << " could not be opened for reading!" << endl;
-        exit(1);
+    int line_nr = 1;
+
+    try {
+        // If we couldn't open the input file stream for reading
+        if (!inf || !inf.is_open()) {
+            // Throw an error and
+            throw ios_base::failure("*** " + m_utf16_filename + " could not be opened for reading!\n");
+        }
+
+        cout << "Opening file in out mode for converting" << endl;
+        outf.open(m_utf8_filename.c_str(), ios::binary);
+
+        if (!outf || !outf.is_open()) {
+            // Print an error and exit
+            throw ios_base::failure("*** " + m_utf8_filename + " could not be opened for converting!\n");
+        }
     }
-
-    ofstream outf;
-
-    cout << "Opening file in out mode for converting" << endl;
-    outf.open(m_utf8_filename.c_str(), ios::binary);
-
-    if (!outf) {
-        // Print an error and exit
-        cerr << "m_csv_vector.csv could not be opened for converting!" << endl;
-        exit(1);
+    catch (const std::ios_base::failure& e) {
+        cout << "Exception: " << e.what() << "!\n";
     }
 
     // prepare UTF-8 byte order mark
@@ -106,7 +108,20 @@ void create_utf16_file(){
      * @return: void
      */
     ofstream outf;
-    outf.open("test.csv", ios::binary);
+    string utf16_filename = "test.csv";
+
+    try {
+        outf.open(utf16_filename, ios::binary);
+
+        if (!outf || !outf.is_open()) {
+            // Throw an error
+            throw ios_base::failure("*** " + utf16_filename + " could not be opened for converting!\n");
+        }
+    }
+    catch (const std::ios_base::failure& e) {
+        cout << "Exception: " << e.what() << "!\n";
+    }
+
     unsigned char byte_order_mark[2];
     byte_order_mark[0] = 0xFF;
     byte_order_mark[1] = 0xFE;
