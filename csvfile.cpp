@@ -239,17 +239,10 @@ void CsvFile<T>::write_file(string mode) {
             outf.open(m_filename.c_str(), ios::out);
         }
 
-        if( !outf.is_open() )
+        if( !outf || !outf.is_open() )
         {
-            // cerr writes (typically error messages) to the standard error stream stderr (unbuffered)
-            // https://en.wikipedia.org/wiki/Stderr
-            cout << "*** error: could not open output file\n" ;
-        }
-
-        if (!outf) {
-            // Print an error and exit
-            cerr << "m_csv_vector.csv could not be opened for writing!" << endl;
-            exit(1);
+            // outf should be open
+            throw ios_base::failure("*** error: could not open output file\n");
         }
 
         m_row = m_csv_vector.size();
