@@ -262,8 +262,8 @@ void CsvFile<T>::write_file(string mode) {
 
         outf.close();
     }
-    catch (exception &ex) {
-        cout << "Exception: " << ex.what() << "!\n";
+    catch (const std::ios_base::failure& e) {
+        cout << "Exception: " << e.what() << "!\n";
     }
 }
 
