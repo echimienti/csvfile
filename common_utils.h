@@ -21,6 +21,7 @@ const char *UTF_32_LE_BOM = "\xFF\xFE\x00\x00";
 bool is_number(const string&);
 string get_input(string);
 void copyFile(string, string, string);
+ifstream openFileForRead(string);
 void sleep(int);
 string check_byte_order_mark(const char *, size_t);
 
