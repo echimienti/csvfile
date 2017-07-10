@@ -573,7 +573,7 @@ int CsvFile<T>::delete_modify(string mode, string csvSubject) {
                 }
             }
             else if(confirm == "n" or confirm == "q") {
-                return 0;
+                return 1;
             }
         }
     }
