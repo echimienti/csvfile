@@ -362,7 +362,7 @@ string CsvFile<double>::search_entry(string search_for) {
 }
 
 template <class T>
-void CsvFile<T>::backup_data() {
+int CsvFile<T>::backup_data() {
     /* Creates backup directory if not exists and makes a backup of csv file
      *
      * @param: no parameters
