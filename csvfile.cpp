@@ -15,6 +15,7 @@
 #include <string>
 #include <iomanip>
 #include <limits>
+#include <cassert>
 
 
 template <class T>
@@ -423,19 +424,44 @@ int CsvFile<T>::restore_data() {
 }
 
 template <class T>
-void CsvFile<T>::update_field(int row) {
+void CsvFile<T>::update_field(int row, bool isTest, vector<string> inp) {
     /* Updates a column in a row of 2 dimensional array
      *
      * @param: row: the row in which a column can be updated
      * @return: void
      */
+    string confirm;
+    string change_string = "";
+
     for(uint j=0;j<m_csv_vector[row].size();j++) {
         cout << m_csv_vector[row][j] << endl;
-        string confirm = get_input("\nDo you want to modify this string?\n"
-                                   "Confirm y/n or quit: q:");
+
+        if(isTest && j == 0){
+            confirm = inp[3];
+            if(confirm == "y"){
+                change_string = inp[4];
+            }
+        }
+        else if(isTest && j > 0){
+            if(change_string != ""){
+                confirm = inp[5];
+                confirm = inp[6];
+            }
+            else {
+                confirm = inp[4];
+            }
+        }
+        else{
+            if(!isTest){
+                confirm = get_input("\nDo you want to modify this string?\n"
+                                           "Confirm y/n or quit: q:");
+            }
+        }
 
         if(confirm == "y") {
-            string change_string = get_input("Enter new string?");
+            if(!isTest){
+                change_string = get_input("Enter new string?");
+            }
             m_csv_vector[row][j] = change_string;
 
             cout << "changed to: " << m_csv_vector[row][j] << endl;
@@ -450,19 +476,37 @@ void CsvFile<T>::update_field(int row) {
 }
 
 template <>
-void CsvFile<int>::update_field(int row) {
+void CsvFile<int>::update_field(int row, bool isTest, vector<string> inp) {
     /* Updates a column in a row of 2 dimensional array
      *
      * @param: row: the row in which a column can be updated
      * @return: void
      */
+    string confirm;
+    string change_string;
+
     for(int j=0;j<m_col;j++) {
         cout << m_csv_vector[row][j] << endl;
-        string confirm = get_input("Do you want to modify this string?\n"
-                                   "Confirm y/n or quit: q:");
+
+        if(isTest && j == 0){
+            confirm = inp[3];
+            change_string = inp[4];
+        }
+        else if(isTest && j > 0){
+            confirm = inp[5];
+            confirm = inp[6];
+        }
+        else{
+            if(!isTest){
+                confirm = get_input("Do you want to modify this string?\n"
+                                           "Confirm y/n or quit: q:");
+            }
+        }
 
         if(confirm == "y") {
-            string change_string = get_input("Enter new string?");
+            if(!isTest){
+                change_string = get_input("Enter new string?");
+            }
             m_csv_vector[row][j] = stoi(change_string);
 
             cout << "changed to: " << m_csv_vector[row][j] << endl;
@@ -477,19 +521,37 @@ void CsvFile<int>::update_field(int row) {
 }
 
 template <>
-void CsvFile<double>::update_field(int row) {
+void CsvFile<double>::update_field(int row, bool isTest, vector<string> inp) {
     /* Updates a column in a row of 2 dimensional array
      *
      * @param: row: the row in which a column can be updated
      * @return: void
      */
+    string confirm;
+    string change_string;
+
     for(int j=0;j<m_col;j++) {
         cout << m_csv_vector[row][j] << endl;
-        string confirm = get_input("Do you want to modify this string?\n"
-                                   "Confirm y/n or quit: q:");
+
+        if(isTest && j == 0){
+            confirm = inp[3];
+            change_string = inp[4];
+        }
+        else if(isTest && j > 0){
+            confirm = inp[5];
+            confirm = inp[6];
+        }
+        else{
+            if(!isTest){
+                confirm = get_input("Do you want to modify this string?\n"
+                                    "Confirm y/n or quit: q:");
+            }
+        }
 
         if(confirm == "y") {
-            string change_string = get_input("Enter new string?");
+            if(!isTest){
+                change_string = get_input("Enter new string?");
+            }
             m_csv_vector[row][j] = stod(change_string);
 
             cout << "changed to: " << m_csv_vector[row][j] << endl;
@@ -504,13 +566,17 @@ void CsvFile<double>::update_field(int row) {
 }
 
 template <class T>
-int CsvFile<T>::delete_modify(string mode, string csvSubject) {
+int CsvFile<T>::delete_modify(string mode, string csvSubject, bool isTest, vector<string> inp) {
     /* Deletes or modifies a row in the 2 dimensional array
      *
      * @param: mode: delete or modify
      * @param: csvSubject: the subject of the csv file ( e.g. addresses )
      * @return: int
      */
+    string confirm_main;
+    int line_nr;
+    string confirm_l_all;
+    string confirm_line;
 
     try {
         if(mode != "delete" && mode != "modify"){
@@ -522,21 +588,39 @@ int CsvFile<T>::delete_modify(string mode, string csvSubject) {
         return -1;
     }
 
-    string confirm = get_input("Do you want to " + mode + " " + csvSubject +
-                               " ?\nConfirm " + mode + " y/n:");
+    if(isTest){
+        assert(inp.size() > 0);
+        confirm_main = inp[0];
 
-    if (confirm == "y") {
-        int line_nr = stoi(get_input("Line number to " + mode + "\nEnter -1 to step through them all:"));
+        if(inp.size() > 1){
+            line_nr = stoi(inp[1]);
+            if(inp.size() > 2){
+                confirm_l_all = inp[2];
+                confirm_line = inp[2];
+            }
+        }
+    }
+    else {
+        confirm_main = get_input("Do you want to " + mode + " " + csvSubject +
+                                   " ?\nConfirm " + mode + " y/n:");
+    }
+
+    if (confirm_main == "y") {
+        if(!isTest){
+            int line_nr = stoi(get_input("Line number to " + mode + "\nEnter -1 to step through them all:"));
+        }
         if(line_nr == -1) {
             for(int i=0;i<m_row;i++) {
                 for(uint j=0;j<m_csv_vector[i].size();j++) {
                     cout << m_csv_vector[i][j] << ' ';
                 }
 
-                string confirm_l = get_input("\nDo you want to " + mode + " this line?\n"
-                                             "Confirm " + mode + ": y/n/ or quit: q:");
+                if(!isTest){
+                    confirm_l_all = get_input("\nDo you want to " + mode + " this line?\n"
+                                                 "Confirm " + mode + ": y/n/ or quit: q:");
+                }
 
-                if(confirm_l == "y") {
+                if(confirm_l_all == "y") {
                     cout << mode + " line: " << i << endl;
                     if(mode == "delete"){
                         m_csv_vector.erase(m_csv_vector.begin() + i);
@@ -544,13 +628,13 @@ int CsvFile<T>::delete_modify(string mode, string csvSubject) {
                         m_row--;
                     }
                     else if (mode == "modify"){
-                        update_field(i);
+                        update_field(i, isTest, inp);
                     }
                 }
-                if(confirm_l == "n") {
+                if(confirm_l_all == "n") {
                     continue;
                 }
-                if(confirm_l == "q") {
+                if(confirm_l_all == "q") {
                     break;
                 }
 
@@ -561,27 +645,30 @@ int CsvFile<T>::delete_modify(string mode, string csvSubject) {
             for(uint j=0;j<m_csv_vector[line_nr - 1].size();j++) {
                 cout << m_csv_vector[line_nr - 1][j] << ' ';
             }
-            string confirm = get_input("\nDo you want to " + mode + " line: " + to_string(line_nr) + " ?\n"
-                                       "Confirm " + mode + " y/n or q to quit:");
 
-            if(confirm == "y") {
+            if(!isTest){
+                confirm_line = get_input("\nDo you want to " + mode + " line: " + to_string(line_nr) + " ?\n"
+                                           "Confirm " + mode + " y/n or q to quit:");
+            }
+
+            if(confirm_line == "y") {
                 if(mode == "delete"){
                     m_csv_vector.erase(m_csv_vector.begin() + (line_nr - 1));
                 }
                 else if (mode == "modify"){
-                    update_field(line_nr - 1);
+                    update_field(line_nr - 1, isTest, inp);
                 }
             }
-            else if(confirm == "n" or confirm == "q") {
+            else if(confirm_line == "n" or confirm_line == "q") {
                 return 1;
             }
         }
     }
-    else if(confirm == "n"){
+    else if(confirm_main == "n"){
         return 1;
     }
     else{
-        delete_modify(mode, csvSubject);
+        delete_modify(mode, csvSubject, isTest, inp);
     }
     return 0;
 }

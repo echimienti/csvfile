@@ -300,6 +300,61 @@ TEST(csv_search_last_element_with_quotes_test, csv_search_Pos) {
     clean_test_files();
 }
 
+// modify test
+TEST(csv_modify_test_modify, csv_modify_pos) {
+    clean_test_files();
+
+    CsvFile<string> csv("test.csv", an_address, 8);
+    vector<string> input {"y","1","y","y","Pieter","n","q"};
+    bool isTest = true;
+
+    int result = csv.delete_modify("modify", "addresses", isTest, input);
+    ASSERT_EQ(0, result) << "Failed to modify";
+
+    clean_test_files();
+}
+
+TEST(csv_modify_test_confirm_main_no, csv_modify_pos) {
+    clean_test_files();
+
+    CsvFile<string> csv("test.csv", an_address, 8);
+    vector<string> input {"n"};
+    bool isTest = true;
+
+    int result = csv.delete_modify("modify", "addresses", isTest, input);
+    ASSERT_EQ(1, result) << "Failed to enter no in main confirm";
+
+    clean_test_files();
+}
+
+TEST(csv_modify_test_confirm_modify_no, csv_modify_pos) {
+    clean_test_files();
+
+    CsvFile<string> csv("test.csv", an_address, 8);
+    vector<string> input {"y","1","n"};
+    bool isTest = true;
+
+    int result = csv.delete_modify("modify", "addresses", isTest, input);
+    cout << endl;
+    ASSERT_EQ(1, result) << "Failed to enter no in modify confirm";
+
+    clean_test_files();
+}
+
+TEST(csv_modify_test_confirm_update_no, csv_modify_pos) {
+    clean_test_files();
+
+    CsvFile<string> csv("test.csv", an_address, 8);
+    vector<string> input {"y","1","y", "n", "q"};
+    bool isTest = true;
+
+    int result = csv.delete_modify("modify", "addresses", isTest, input);
+    cout << endl;
+    ASSERT_EQ(0, result) << "Failed to enter no in update confirm";
+
+    clean_test_files();
+}
+
 // integer tests
 TEST(csv_write_read_file_int_test, csv_write_read_pos) {
 

@@ -72,8 +72,8 @@ public:
     //! Searches for string in 2 dimensional vector
     string search_entry(string);
 
-    //! Deletes row from 2 dimensional vector
-    int delete_modify(string, string);
+    //! Deletes or modifies a row from 2 dimensional vector
+    int delete_modify(string, string, bool isTest=false, vector<string> inp={});
 
     //! Backs up csv file
     int backup_data();
@@ -82,7 +82,7 @@ public:
     int restore_data();
 
     //! Update a field in 2 dimensional vector
-    void update_field(int);
+    void update_field(int, bool isTest=false, vector<string> inp={});
 };
 
 #endif /* CSV_FILE_PROJ_CSVFILE_H_ */
