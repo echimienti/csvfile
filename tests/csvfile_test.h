@@ -361,6 +361,25 @@ TEST(csv_modify_test_confirm_modify_no, csv_modify_pos) {
     clean_test_files();
 }
 
+TEST(csv_modify_test_confirm_update_quit, csv_modify_pos) {
+    clean_test_files();
+
+    CsvFile<string> csv("test.csv", an_address, 8);
+
+    // Do you want to modify addresses: y
+    // Line number to modify\nEnter -1 to step through them all: 1
+    // Do you want to modify line: 1?\n Confirm modify y/n or q to quit: y
+    // Do you want to modify this string?\n Confirm y/n or quit: q: q
+    vector<string> input {"y","1","y", "q"};
+    bool isTest = true;
+
+    int result = csv.delete_modify("modify", "addresses", isTest, input);
+    cout << endl;
+    ASSERT_EQ(0, result) << "Failed to enter no in update confirm";
+
+    clean_test_files();
+}
+
 TEST(csv_modify_test_confirm_update_no, csv_modify_pos) {
     clean_test_files();
 
