@@ -319,6 +319,12 @@ TEST(csv_modify_test_modify, csv_modify_pos) {
     int result = csv.delete_modify("modify", "addresses", isTest, input);
     ASSERT_EQ(0, result) << "Failed to modify";
 
+    csv.write_file("in");
+    string expected_found = "Pieter";
+    string search_found = csv.search_entry("Pieter");
+
+    ASSERT_EQ(expected_found, search_found) << "Should have found Pieter";
+
     clean_test_files();
 }
 
