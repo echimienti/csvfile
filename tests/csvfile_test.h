@@ -305,6 +305,14 @@ TEST(csv_modify_test_modify, csv_modify_pos) {
     clean_test_files();
 
     CsvFile<string> csv("test.csv", an_address, 8);
+
+    // Do you want to modify addresses: y
+    // Line number to modify\nEnter -1 to step through them all: 1
+    // Do you want to modify line: 1?\n Confirm modify y/n or q to quit: y
+    // Do you want to modify this string?\n Confirm y/n or quit: q: y
+    // Enter new string? Pieter
+    // Do you want to modify this string? n
+    // Do you want to modify this string? q
     vector<string> input {"y","1","y","y","Pieter","n","q"};
     bool isTest = true;
 
@@ -318,6 +326,8 @@ TEST(csv_modify_test_confirm_main_no, csv_modify_pos) {
     clean_test_files();
 
     CsvFile<string> csv("test.csv", an_address, 8);
+
+    // Do you want to modify addresses: n
     vector<string> input {"n"};
     bool isTest = true;
 
@@ -331,6 +341,10 @@ TEST(csv_modify_test_confirm_modify_no, csv_modify_pos) {
     clean_test_files();
 
     CsvFile<string> csv("test.csv", an_address, 8);
+
+    // Do you want to modify addresses: y
+    // Line number to modify\nEnter -1 to step through them all: 1
+    // Do you want to modify line: 1?\n Confirm modify y/n or q to quit: n
     vector<string> input {"y","1","n"};
     bool isTest = true;
 
@@ -345,6 +359,12 @@ TEST(csv_modify_test_confirm_update_no, csv_modify_pos) {
     clean_test_files();
 
     CsvFile<string> csv("test.csv", an_address, 8);
+
+    // Do you want to modify addresses: y
+    // Line number to modify\nEnter -1 to step through them all: 1
+    // Do you want to modify line: 1?\n Confirm modify y/n or q to quit: y
+    // Do you want to modify this string?\n Confirm y/n or quit: q: n
+    // Do you want to modify this string?\n Confirm y/n or quit: q: q
     vector<string> input {"y","1","y", "n", "q"};
     bool isTest = true;
 
