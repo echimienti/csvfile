@@ -607,7 +607,7 @@ int CsvFile<T>::delete_modify(string mode, string csvSubject, bool isTest, vecto
 
     if (confirm_main == "y") {
         if(!isTest){
-            int line_nr = stoi(get_input("Line number to " + mode + "\nEnter -1 to step through them all:"));
+            line_nr = stoi(get_input("Line number to " + mode + "\nEnter -1 to step through them all:"));
         }
         if(line_nr == -1) {
             for(int i=0;i<m_row;i++) {
