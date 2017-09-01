@@ -19,6 +19,22 @@
 
 
 template <class T>
+//! Constructor for all operations except adding a row
+CsvFile<T>::CsvFile(string fileName, int col) :
+            m_filename(fileName), m_row(count_csv_file_lines()), m_col(col)
+{
+
+}
+
+template <class T>
+//! Constructor for adding a row
+CsvFile<T>::CsvFile(string fileName, vector< vector<T> > a_csvLine, int col) :
+        m_filename(fileName), m_csv_vector(a_csvLine), m_row(count_csv_file_lines()), m_col(col)
+{
+
+}
+
+template <class T>
 void CsvFile<T>::print_entries() {
     /* Print the csv entries from the 2 dimensional vector
      * with the line number ahead of it
