@@ -5,8 +5,7 @@
  *      Author: echimienti
  */
 
-#ifndef LIBS_CSVFILE_CONVERT_UTF16_H_
-#define LIBS_CSVFILE_CONVERT_UTF16_H_
+#pragma once
 
 #include <iostream>
 #include <fstream>
@@ -34,5 +33,3 @@ public:
     //! Creates UTF16-LE file
     void create_utf16_file();
 };
-
-#endif /* LIBS_CSVFILE_CONVERT_UTF16_H_ */

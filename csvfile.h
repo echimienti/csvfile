@@ -6,8 +6,7 @@
  *  @version 0.1 28/03/17
  */
 
-#ifndef CSV_FILE_PROJ_CSVFILE_H_
-#define CSV_FILE_PROJ_CSVFILE_H_
+#pragma once
 
 #include <iostream>
 #include <fstream>
@@ -76,5 +75,3 @@ public:
     //! Update a field in 2 dimensional vector
     void update_field(int, bool isTest=false, vector<string> inp={});
 };
-
-#endif /* CSV_FILE_PROJ_CSVFILE_H_ */

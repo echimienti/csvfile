@@ -5,8 +5,7 @@
  *      Author: echimienti
  */
 
-#ifndef LIBS_CSVFILE_COMMON_UTILS_H_
-#define LIBS_CSVFILE_COMMON_UTILS_H_
+#pragma once
 
 
 using namespace std;
@@ -24,5 +23,3 @@ void copyFile(string, string, string);
 ifstream openFileForRead(string);
 void sleep(int);
 string check_byte_order_mark(const char *, size_t);
-
-#endif /* LIBS_CSVFILE_COMMON_UTILS_H_ */
