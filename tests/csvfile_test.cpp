@@ -6,7 +6,10 @@
  *  @version 0.1 09/05/17
  *
  */
+#include <gtest/gtest.h>
 #include <vector>
+
+#include "csvfile.cpp"
 
 
 using namespace std;

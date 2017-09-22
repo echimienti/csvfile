@@ -24,8 +24,7 @@ CFLAGS=-Wall -Wextra -I.
 .cpp.o:
 	g++ -std=c++11 $(CFLAGS) -c $< -o $@
 
-TARGETS =
-TARGETS += csvfile_main
+TARGETS = csvfile_main
 
 all:	$(TARGETS)
 
@@ -49,5 +48,3 @@ csvfile_main: csvfile_main.o csvfile.o
 -include $(MAKEFILE_DEPEND)
 
 ## End of file 
-
-	

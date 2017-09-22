@@ -12,6 +12,6 @@
 #include <iostream>
 
 int main(){
-    cout << "This is for library usage only" << endl;
+    std::cout << "This is for library usage only" << std::endl;
     return 0;
 }

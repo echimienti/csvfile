@@ -4,8 +4,15 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # Locate GTest
 find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
+include_directories(
+    ${GTEST_INCLUDE_DIRS}
+    ../
+)
 
 # Link runTests with what we want to test and the GTest and pthread library
-add_executable(runTests main_test.cpp)
+add_executable(
+    runTests
+    main_test.cpp
+    csvfile_test.cpp
+)
 target_link_libraries(runTests ${GTEST_LIBRARIES} pthread)

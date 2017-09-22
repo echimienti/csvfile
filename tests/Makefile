@@ -123,6 +123,33 @@ runTests/fast:
 	$(MAKE) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/build
 .PHONY : runTests/fast
 
+csvfile_test.o: csvfile_test.cpp.o
+
+.PHONY : csvfile_test.o
+
+# target to build an object file
+csvfile_test.cpp.o:
+	$(MAKE) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/csvfile_test.cpp.o
+.PHONY : csvfile_test.cpp.o
+
+csvfile_test.i: csvfile_test.cpp.i
+
+.PHONY : csvfile_test.i
+
+# target to preprocess a source file
+csvfile_test.cpp.i:
+	$(MAKE) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/csvfile_test.cpp.i
+.PHONY : csvfile_test.cpp.i
+
+csvfile_test.s: csvfile_test.cpp.s
+
+.PHONY : csvfile_test.s
+
+# target to generate assembly for a file
+csvfile_test.cpp.s:
+	$(MAKE) -f CMakeFiles/runTests.dir/build.make CMakeFiles/runTests.dir/csvfile_test.cpp.s
+.PHONY : csvfile_test.cpp.s
+
 main_test.o: main_test.cpp.o
 
 .PHONY : main_test.o
@@ -159,6 +186,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... runTests"
+	@echo "... csvfile_test.o"
+	@echo "... csvfile_test.i"
+	@echo "... csvfile_test.s"
 	@echo "... main_test.o"
 	@echo "... main_test.i"
 	@echo "... main_test.s"
