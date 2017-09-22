@@ -6,10 +6,10 @@
  *  @version 0.1 09/05/17
  *
  */
-#include <gtest/gtest.h>
 #include <vector>
 
 #include "csvfile.cpp"
+#include "CsvFileTest.h"
 
 
 using namespace std;
@@ -80,44 +80,8 @@ vector<double> double_entry1 {1.99999999999996,
 
 vector< vector <double> > a_double_vec { double_entry1 };
 
-string system_cmd_output() {
-    ifstream inf("out.txt");
-    string line;
-    string act_line;
-
-    while (!inf.eof()) {
-        getline(inf, line, '\n');
-        if (line.size() != 0) {
-            act_line = line;
-        }
-    }
-    inf.close();
-
-    return act_line;
-}
-
-void clean_test_files() {
-    // if test files exist delete them first
-    const int test_file_exist = system("ls test.csv > /dev/null 2>&1");
-    if(test_file_exist == 0) {
-        system("rm test.csv");
-    }
-
-    const int out_file_exist = system("ls out.txt > /dev/null 2>&1");
-    if(out_file_exist == 0) {
-        system("rm out.txt");
-    }
-
-    const int test_csv_utf8_file_exist = system("ls test.csv.utf8 > /dev/null 2>&1");
-    if(test_csv_utf8_file_exist == 0) {
-        system("rm test.csv.utf8");
-    }
-}
-
 // string tests
-TEST(csv_write_read_file_string_test, csv_write_read_pos) {
-
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_write_read_pos) {
 
     CsvFile<string> csv("test.csv", an_address, 8);
     csv.write_file("app");
@@ -133,12 +97,9 @@ TEST(csv_write_read_file_string_test, csv_write_read_pos) {
     csv_r.read_file();
 
     ASSERT_EQ(1, csv.count_vector_rows()) << "Size of vector should be 1";
-
-    clean_test_files();
 }
 
-TEST(csv_element_quotes_with_comma_test, csv_write_read_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_element_quotes_with_comma_test_pos) {
 
     an_address.push_back(element_with_comma_entry);
 
@@ -153,11 +114,9 @@ TEST(csv_element_quotes_with_comma_test, csv_write_read_pos) {
     ASSERT_EQ(act_lines, "2") << "Expected 2 rows written/read";
 
     an_address.pop_back();
-    clean_test_files();
 }
 
-TEST(csv_single_element_with_quotes_test, csv_write_read_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_single_element_with_quotes_test_pos) {
 
     an_address.push_back(single_element_with_quotes_entry);
 
@@ -172,11 +131,9 @@ TEST(csv_single_element_with_quotes_test, csv_write_read_pos) {
     ASSERT_EQ(act_lines, "2") << "Expected 2 rows written/read";
 
     an_address.pop_back();
-    clean_test_files();
 }
 
-TEST(csv_two_consequtive_elements_with_quotes_test, csv_write_read_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_two_consequtive_elements_with_quotes_test_pos) {
 
     an_address.push_back(consequtive_elements_with_quotes_entry);
 
@@ -191,11 +148,9 @@ TEST(csv_two_consequtive_elements_with_quotes_test, csv_write_read_pos) {
     ASSERT_EQ(act_lines, "2") << "Expected 2 rows written/read";
 
     an_address.pop_back();
-    clean_test_files();
 }
 
-TEST(csv_last_element_with_quotes_test, csv_write_read_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_last_element_with_quotes_test_pos) {
 
     an_address.push_back(last_element_with_quotes_entry);
 
@@ -210,11 +165,9 @@ TEST(csv_last_element_with_quotes_test, csv_write_read_pos) {
     ASSERT_EQ(act_lines, "2") << "Expected 2 rows written/read";
 
     an_address.pop_back();
-    clean_test_files();
 }
 
-TEST(csv_search_file_string_test, csv_search_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_search_file_string_test_pos) {
 
     CsvFile<string> csv("test.csv", an_address, 8);
     csv.write_file("in");
@@ -222,12 +175,10 @@ TEST(csv_search_file_string_test, csv_search_pos) {
     string search_found = csv.search_entry("Puk");
 
     ASSERT_EQ(expected_found, search_found) << "Did not find Puk";
-
-    clean_test_files();
 }
 
-TEST(csv_search_file_string_test, csv_search_neg) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_search_file_string_test_neg) {
+
 
     CsvFile<string> csv("test.csv", an_address, 8);
     csv.write_file("in");
@@ -235,12 +186,9 @@ TEST(csv_search_file_string_test, csv_search_neg) {
     string search_found = csv.search_entry("Pietje");
 
     ASSERT_NE(expected_found, search_found) << "Should not find Pietje";
-
-    clean_test_files();
 }
 
-TEST(csv_search_file_element_quotes_with_comma_test, csv_search_Pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_search_file_element_quotes_with_comma_test_pos) {
 
     an_address.push_back(element_with_comma_entry);
 
@@ -252,11 +200,9 @@ TEST(csv_search_file_element_quotes_with_comma_test, csv_search_Pos) {
     ASSERT_EQ(expected_found, search_found) << "Should have found Pietje, Pukkie";
 
     an_address.pop_back();
-    clean_test_files();
 }
 
-TEST(csv_search_single_element_with_quotes_test, csv_search_Pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_search_single_element_with_quotes_test_pos) {
 
     an_address.push_back(single_element_with_quotes_entry);
 
@@ -268,11 +214,9 @@ TEST(csv_search_single_element_with_quotes_test, csv_search_Pos) {
     ASSERT_EQ(expected_found, search_found) << "Should have found \"Pietje, Pukkie";
 
     an_address.pop_back();
-    clean_test_files();
 }
 
-TEST(csv_search_two_consequtive_elements_with_quotes_test, csv_search_Pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_search_two_consequtive_elements_with_quotes_test_pos) {
 
     an_address.push_back(consequtive_elements_with_quotes_entry);
 
@@ -284,11 +228,9 @@ TEST(csv_search_two_consequtive_elements_with_quotes_test, csv_search_Pos) {
     ASSERT_EQ(expected_found, search_found) << "Should have found Pietje\",\"Pukkie";
 
     an_address.pop_back();
-    clean_test_files();
 }
 
-TEST(csv_search_last_element_with_quotes_test, csv_search_Pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_search_last_element_with_quotes_test_pos) {
 
     an_address.push_back(last_element_with_quotes_entry);
 
@@ -300,12 +242,10 @@ TEST(csv_search_last_element_with_quotes_test, csv_search_Pos) {
     ASSERT_EQ(expected_found, search_found) << "Should have found \"piet@puk.nl";
 
     an_address.pop_back();
-    clean_test_files();
 }
 
 // modify test
-TEST(csv_modify_test_modify, csv_modify_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_modify_test_modify_pos) {
 
     CsvFile<string> csv("test.csv", an_address, 8);
 
@@ -327,12 +267,9 @@ TEST(csv_modify_test_modify, csv_modify_pos) {
     string search_found = csv.search_entry("Pieter");
 
     ASSERT_EQ(expected_found, search_found) << "Should have found Pieter";
-
-    clean_test_files();
 }
 
-TEST(csv_modify_test_confirm_main_no, csv_modify_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_modify_test_confirm_main_no_pos) {
 
     CsvFile<string> csv("test.csv", an_address, 8);
 
@@ -342,12 +279,9 @@ TEST(csv_modify_test_confirm_main_no, csv_modify_pos) {
 
     int result = csv.delete_modify("modify", "addresses", isTest, input);
     ASSERT_EQ(1, result) << "Failed to enter no in main confirm";
-
-    clean_test_files();
 }
 
-TEST(csv_modify_test_confirm_modify_no, csv_modify_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_modify_test_confirm_modify_no_pos) {
 
     CsvFile<string> csv("test.csv", an_address, 8);
 
@@ -360,12 +294,9 @@ TEST(csv_modify_test_confirm_modify_no, csv_modify_pos) {
     int result = csv.delete_modify("modify", "addresses", isTest, input);
     cout << endl;
     ASSERT_EQ(1, result) << "Failed to enter no in modify confirm";
-
-    clean_test_files();
 }
 
-TEST(csv_modify_test_confirm_update_quit, csv_modify_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_modify_test_confirm_update_quit_pos) {
 
     CsvFile<string> csv("test.csv", an_address, 8);
 
@@ -379,12 +310,9 @@ TEST(csv_modify_test_confirm_update_quit, csv_modify_pos) {
     int result = csv.delete_modify("modify", "addresses", isTest, input);
     cout << endl;
     ASSERT_EQ(0, result) << "Failed to enter no in update confirm";
-
-    clean_test_files();
 }
 
-TEST(csv_modify_test_confirm_update_no, csv_modify_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_modify_test_confirm_update_no_pos) {
 
     CsvFile<string> csv("test.csv", an_address, 8);
 
@@ -399,14 +327,10 @@ TEST(csv_modify_test_confirm_update_no, csv_modify_pos) {
     int result = csv.delete_modify("modify", "addresses", isTest, input);
     cout << endl;
     ASSERT_EQ(0, result) << "Failed to enter no in update confirm";
-
-    clean_test_files();
 }
 
 // integer tests
-TEST(csv_write_read_file_int_test, csv_write_read_pos) {
-
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_write_read_file_int_test_pos) {
 
     CsvFile<int> csv("test.csv", a_num_vec, 5);
     csv.write_file("app");
@@ -422,12 +346,9 @@ TEST(csv_write_read_file_int_test, csv_write_read_pos) {
     csv_r.read_file();
 
     ASSERT_EQ(1, csv.count_vector_rows()) << "Size of vector should be 1";
-
-    clean_test_files();
 }
 
-TEST(csv_search_file_int_test, csv_search_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_search_file_int_test_pos) {
 
     CsvFile<int> csv("test.csv", a_num_vec, 5);
     csv.write_file("in");
@@ -435,12 +356,9 @@ TEST(csv_search_file_int_test, csv_search_pos) {
     string search_found = csv.search_entry("3");
 
     ASSERT_EQ(expected_found, search_found) << "Did not find 3";
-
-    clean_test_files();
 }
 
-TEST(csv_search_file_int_test, csv_search_neg) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_search_file_int_test_neg) {
 
     CsvFile<int> csv("test.csv", a_num_vec, 5);
     csv.write_file("in");
@@ -448,12 +366,9 @@ TEST(csv_search_file_int_test, csv_search_neg) {
     string search_found = csv.search_entry("-1");
 
     ASSERT_NE(expected_found, search_found) << "Should not find -1";
-
-    clean_test_files();
 }
 
-TEST(csv_add_second_entry_int_test, csv_search_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_add_second_entry_int_test_pos) {
 
     a_num_vec.push_back(num_entry2);
 
@@ -462,14 +377,10 @@ TEST(csv_add_second_entry_int_test, csv_search_pos) {
 
     csv.write_file("in");
     ASSERT_EQ(2, csv.count_csv_file_lines()) << "Nr of rows in csv file should be 2";
-
-    clean_test_files();
 }
 
 // double tests
-TEST(csv_write_read_file_double_test, csv_write_read_pos) {
-
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_write_read_file_double_test_pos) {
 
     CsvFile<double> csv("test.csv", a_double_vec, 5);
     csv.write_file("app");
@@ -485,12 +396,9 @@ TEST(csv_write_read_file_double_test, csv_write_read_pos) {
     csv_r.read_file();
 
     ASSERT_EQ(1, csv.count_vector_rows()) << "Size of vector should be 1";
-
-    clean_test_files();
 }
 
-TEST(csv_search_file_double_test, csv_search_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_search_file_double_test_pos) {
 
     CsvFile<double> csv("test.csv", a_double_vec, 5);
     csv.write_file("in");
@@ -500,11 +408,10 @@ TEST(csv_search_file_double_test, csv_search_pos) {
 
     ASSERT_EQ(expected_found, search_found) << "3.99999999999996";
 
-    clean_test_files();
+
 }
 
-TEST(csv_search_file_double_test, csv_search_neg) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_search_file_double_test_neg) {
 
     CsvFile<double> csv("test.csv", a_double_vec, 5);
     csv.write_file("in");
@@ -512,13 +419,10 @@ TEST(csv_search_file_double_test, csv_search_neg) {
     string search_found = csv.search_entry("2.99999999999997");
 
     ASSERT_NE(expected_found, search_found) << "Should not find 2.99999999999997";
-
-    clean_test_files();
 }
 
 // byte order mark tests
-TEST(csv_byte_order_mark_UTF8, csv_bom_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_byte_order_mark_UTF8_pos) {
 
     string csvLine;
     ofstream outf;
@@ -540,12 +444,9 @@ TEST(csv_byte_order_mark_UTF8, csv_bom_pos) {
     string bom_type = check_byte_order_mark(csvLine.c_str(), csvLine.size());
 
     ASSERT_EQ("UTF-8", bom_type) << "Should have found UTF-8";
-
-    clean_test_files();
 }
 
-TEST(csv_byte_order_mark_UTF16, csv_bom_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_byte_order_mark_UTF16_pos) {
 
     string csvLine;
     create_utf16_file();
@@ -555,13 +456,10 @@ TEST(csv_byte_order_mark_UTF16, csv_bom_pos) {
     string bom_type = check_byte_order_mark(csvLine.c_str(), csvLine.size());
 
     ASSERT_EQ("UTF-16-LE", bom_type) << "Should have found UTF-16-LE";
-
-    clean_test_files();
 }
 
 // convert utf16 test
-TEST(csv_convert_UTF16_to_UTF8, csv_pos) {
-    clean_test_files();
+TEST_F(CsvFileTestBase, csv_convert_UTF16_to_UTF8_pos) {
 
     string csvLine;
     create_utf16_file();
@@ -595,6 +493,4 @@ TEST(csv_convert_UTF16_to_UTF8, csv_pos) {
             }
         }
     }
-
-    clean_test_files();
 }

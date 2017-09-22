@@ -13,6 +13,7 @@ include_directories(
 add_executable(
     runTests
     main_test.cpp
+    CsvFileTest.cpp
     csvfile_test.cpp
 )
 target_link_libraries(runTests ${GTEST_LIBRARIES} pthread)
