@@ -9,6 +9,8 @@
 #include <iostream>
 #include <algorithm>
 #include <string.h>
+#include <fstream>
+
 #include "common_utils.h"
 
 

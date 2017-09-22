@@ -7,15 +7,20 @@
  *
  *  Purpose: 2 dimensional vector. Reading from and writing to csv file
  */
-
-#include "csvfile.h"
-#include "convert_utf16.cpp"
 #include <stdexcept>
 #include <sstream>
 #include <string>
 #include <iomanip>
 #include <limits>
+#include <algorithm>
 #include <cassert>
+
+#include "csvfile.h"
+#include "convert_utf16.cpp"
+#include "common_utils.cpp"
+
+
+using namespace std;
 
 
 template <class T>
@@ -135,7 +140,7 @@ void CsvFile<T>::read_file() {
     // For each line extract the elements
     while (getline(inf, csvLine, '\n')) {
         if (csvLine.size() != 0) {
-            int nr_el_comma = count(csvLine.begin(), csvLine.end(), ',');
+            int nr_el_comma = std::count(csvLine.begin(), csvLine.end(), ',');
             string str_buf = "";
             vector<T> csvItem;
             stringstream csvLineStream(csvLine);
@@ -144,7 +149,7 @@ void CsvFile<T>::read_file() {
                 getline(csvLineStream, element, ',');
 
                 // check element starts with double quote and element is not only double quote
-                size_t n_dquotes = count(element.begin(), element.end(), '"');
+                size_t n_dquotes = std::count(element.begin(), element.end(), '"');
                 if(n_dquotes > 0 && element.size() > 0) {
                     // if two consecutive elements contain double quotes
                     // handle "xxxx,xxxx",

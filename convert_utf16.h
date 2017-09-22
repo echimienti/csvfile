@@ -10,7 +10,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "common_utils.cpp"
+#include "common_utils.h"
+
 
 /*! UTF16 Class: a class provides functions for doing operations
  * UTF16 files
