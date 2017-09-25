@@ -88,7 +88,7 @@ TEST_F(CsvFileTestBase, write_read_pos) {
 
     system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
 
-    string act_lines = system_cmd_output();
+    string act_lines = cout_lines_in_testfile();
 
     ASSERT_EQ(csv.get_m_csv_vector().size(), 1) << "Expected 1 row written/read";
     ASSERT_EQ(act_lines, "1") << "Expected 1 row written/read";
@@ -108,7 +108,7 @@ TEST_F(CsvFileTestBase, element_quotes_with_comma_pos) {
 
     system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
 
-    string act_lines = system_cmd_output();
+    string act_lines = cout_lines_in_testfile();
 
     ASSERT_EQ(csv.get_m_csv_vector().size(), 2) << "Expected 2 rows written/read";
     ASSERT_EQ(act_lines, "2") << "Expected 2 rows written/read";
@@ -125,7 +125,7 @@ TEST_F(CsvFileTestBase, single_element_with_quotes_pos) {
 
     system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
 
-    string act_lines = system_cmd_output();
+    string act_lines = cout_lines_in_testfile();
 
     ASSERT_EQ(csv.get_m_csv_vector().size(), 2) << "Expected 2 rows written/read";
     ASSERT_EQ(act_lines, "2") << "Expected 2 rows written/read";
@@ -142,7 +142,7 @@ TEST_F(CsvFileTestBase, two_consequtive_elements_with_quotes_pos) {
 
     system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
 
-    string act_lines = system_cmd_output();
+    string act_lines = cout_lines_in_testfile();
 
     ASSERT_EQ(csv.get_m_csv_vector().size(), 2) << "Expected 2 rows written/read";
     ASSERT_EQ(act_lines, "2") << "Expected 2 rows written/read";
@@ -159,7 +159,7 @@ TEST_F(CsvFileTestBase, last_element_with_quotes_pos) {
 
     system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
 
-    string act_lines = system_cmd_output();
+    string act_lines = cout_lines_in_testfile();
 
     ASSERT_EQ(csv.get_m_csv_vector().size(), 2) << "Expected 2 rows written/read";
     ASSERT_EQ(act_lines, "2") << "Expected 2 rows written/read";
@@ -337,7 +337,7 @@ TEST_F(CsvFileTestBase, write_read_file_int_pos) {
 
     system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
 
-    string act_lines = system_cmd_output();
+    string act_lines = cout_lines_in_testfile();
 
     ASSERT_EQ(csv.get_m_csv_vector().size(), 1) << "Expected 1 row written/read";
     ASSERT_EQ(act_lines, "1") << "Expected 1 row written/read";
@@ -387,7 +387,7 @@ TEST_F(CsvFileTestBase, write_read_file_double_pos) {
 
     system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
 
-    string act_lines = system_cmd_output();
+    string act_lines = cout_lines_in_testfile();
 
     ASSERT_EQ(1, csv.get_m_csv_vector().size()) << "Expected 1 row written/read";
     ASSERT_EQ("1", act_lines) << "Expected 1 row written/read";

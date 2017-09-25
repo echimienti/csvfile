@@ -27,7 +27,7 @@ void CsvFileTestBase::TearDown()
 
 }
 
-string CsvFileTestBase::system_cmd_output()
+string CsvFileTestBase::cout_lines_in_testfile()
 {
     ifstream inf("out.txt");
     string line;
