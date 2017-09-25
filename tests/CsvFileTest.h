@@ -16,7 +16,7 @@ public:
     void SetUp() override;
     void TearDown() override;
 
-    std::string cout_lines_in_testfile();
+    std::string count_lines_in_testfile();
     void clean_test_files();
 
 };
