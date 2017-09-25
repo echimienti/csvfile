@@ -11,6 +11,10 @@
 
 using namespace std;
 
+
+CsvFileTestBase::CsvFileTestBase() = default;
+CsvFileTestBase::~CsvFileTestBase() = default;
+
 void CsvFileTestBase::SetUp()
 {
     clean_test_files();

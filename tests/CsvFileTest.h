@@ -10,8 +10,8 @@
 
 class CsvFileTestBase : public ::testing::Test {
 public:
-    CsvFileTestBase() = default;
-    virtual ~CsvFileTestBase() = default;
+    CsvFileTestBase();
+    virtual ~CsvFileTestBase();
 
     void SetUp() override;
     void TearDown() override;
