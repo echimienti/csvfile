@@ -42,7 +42,7 @@ doc:
 	doxygen -g
 	doxygen
 
-csvfile_main: csvfile_main.o csvfile.o
+csvfile_main: csvfile_main.o csvfile.o common_utils.o convert_utf16.o
 	$(LINK)
 
 -include $(MAKEFILE_DEPEND)

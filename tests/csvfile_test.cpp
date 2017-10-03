@@ -8,7 +8,6 @@
  */
 #include <vector>
 
-#include "csvfile.cpp"
 #include "CsvFileTest.h"
 
 
@@ -66,6 +65,12 @@ vector<string> last_element_with_quotes_entry {"Pietje",
 };
 
 vector< vector <string> > an_address { an_entry };
+vector< vector <string> > two_row_addr_with_comma { an_entry, element_with_comma_entry };
+vector< vector <string> > two_row_addr_single_elem_quotes { an_entry,
+                                                            single_element_with_quotes_entry };
+vector< vector <string> > two_conseq_elem_with_quotes { an_entry, consequtive_elements_with_quotes_entry };
+vector< vector <string> > last_elem_with_quotes_entry { an_entry, last_element_with_quotes_entry };
+
 
 vector<int> num_entry1 {1, 2, 3, 4, 5};
 vector<int> num_entry2 {6, 7, 8, 9, 10};
@@ -80,254 +85,104 @@ vector<double> double_entry1 {1.99999999999996,
 
 vector< vector <double> > a_double_vec { double_entry1 };
 
+struct CsvFileParams {
+    vector< vector <string> > string_address;
+    int expectedLines;
+    string test_name;
+};
+
+class ParameterizedCsvFileTest : public CsvFileTestBase, public ::testing::WithParamInterface<CsvFileParams> {
+public:
+    ParameterizedCsvFileTest() :
+        CsvFileTestBase() {}
+};
+
 // string tests
-TEST_F(CsvFileTestBase, write_read_pos) {
+TEST_P(ParameterizedCsvFileTest, write_read_different_elements) {
 
-    CsvFile<string> csv("test.csv", an_address, 8);
-    csv.write_file("app");
-
-    system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
-
-    string act_lines = count_lines_in_testfile();
-
-    ASSERT_EQ(csv.get_m_csv_vector().size(), 1) << "Expected 1 row written/read";
-    ASSERT_EQ(act_lines, "1") << "Expected 1 row written/read";
-
-    CsvFile<string> csv_r("test.csv", 6);
-    csv_r.read_file();
-
-    ASSERT_EQ(1, csv.count_vector_rows()) << "Size of vector should be 1";
+    CsvFileWriteReadTest(GetParam().string_address, GetParam().expectedLines);
 }
 
-TEST_F(CsvFileTestBase, element_quotes_with_comma_pos) {
 
-    an_address.push_back(element_with_comma_entry);
+INSTANTIATE_TEST_CASE_P(CsvFile,
+    ParameterizedCsvFileTest,
+    testing::Values(
+        CsvFileParams { an_address, 1, "write_read_pos"},
+        CsvFileParams{ two_row_addr_with_comma, 2, "element_quotes_with_comma_pos"},
+        CsvFileParams{ two_row_addr_single_elem_quotes, 2, "single_element_with_quotes_pos"},
+        CsvFileParams{ two_conseq_elem_with_quotes, 2, "two_consequtive_elements_with_quotes_pos"},
+        CsvFileParams{ last_elem_with_quotes_entry, 2, "last_element_with_quotes_pos"}//,
+        //CsvFileParams{ a_num_vec, 1, "write_read_file_int_pos"}
+    )
+);
 
-    CsvFile<string> csv("test.csv", an_address, 8);
-    csv.write_file("in");
+struct CsvSearchParams {
+    vector< vector <string> > test_address;
+    string test_name;
+    string search_string;
+    bool negative_test;
+    string expected_found;
+};
 
-    system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
+class ParameterizedCsvSearchTest : public CsvFileTestBase, public ::testing::WithParamInterface<CsvSearchParams> {
+public:
+    ParameterizedCsvSearchTest() :
+        CsvFileTestBase() {}
+};
 
-    string act_lines = count_lines_in_testfile();
-
-    ASSERT_EQ(csv.get_m_csv_vector().size(), 2) << "Expected 2 rows written/read";
-    ASSERT_EQ(act_lines, "2") << "Expected 2 rows written/read";
-
-    an_address.pop_back();
+// string search tests
+TEST_P(ParameterizedCsvSearchTest, search_string) {
+    CsvFileTestSearch(GetParam().test_address, GetParam().search_string, GetParam().negative_test,
+                      GetParam().expected_found);
 }
 
-TEST_F(CsvFileTestBase, single_element_with_quotes_pos) {
+INSTANTIATE_TEST_CASE_P(CsvFile,
+    ParameterizedCsvSearchTest,
+    testing::Values(
+        CsvSearchParams { an_address, "search_file_string_pos", "Puk", false, ""},
+        CsvSearchParams { an_address, "search_file_string_neg", "Pietje", true, "" },
+        CsvSearchParams{ two_row_addr_with_comma, "search_file_element_quotes_with_comma_pos",
+                         "Pietje", false, "\"Pietje, Pukkie\""},
+        CsvSearchParams{ two_row_addr_single_elem_quotes, "search_single_element_with_quotes_pos",
+                         "Pietje", false, "\"Pietje, Pukkie"},
+        CsvSearchParams{ two_conseq_elem_with_quotes, "search_two_consequtive_elements_with_quotes_pos",
+                         "Pietje", false, "Pietje\",\"Pukkie"},
+        CsvSearchParams{ last_elem_with_quotes_entry, "search_last_element_with_quotes_pos",
+                         "puk.nl", false, "\"piet@puk.nl"}
+    )
+);
 
-    an_address.push_back(single_element_with_quotes_entry);
+struct CsvModifyParams {
+    vector< vector <string> > test_address;
+    string test_name;
+    string search_string;
+    vector<string> input;
+    string expected_found;
+};
 
-    CsvFile<string> csv("test.csv", an_address, 8);
-    csv.write_file("in");
+class ParameterizedCsvModifyTest : public CsvFileTestBase, public ::testing::WithParamInterface<CsvModifyParams> {
+public:
+    ParameterizedCsvModifyTest() :
+        CsvFileTestBase() {}
+};
 
-    system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
-
-    string act_lines = count_lines_in_testfile();
-
-    ASSERT_EQ(csv.get_m_csv_vector().size(), 2) << "Expected 2 rows written/read";
-    ASSERT_EQ(act_lines, "2") << "Expected 2 rows written/read";
-
-    an_address.pop_back();
+// modify tests
+TEST_P(ParameterizedCsvModifyTest, search_string) {
+    CsvFileTestModify(GetParam().test_address, GetParam().search_string, GetParam().input,
+                      GetParam().expected_found);
 }
 
-TEST_F(CsvFileTestBase, two_consequtive_elements_with_quotes_pos) {
+INSTANTIATE_TEST_CASE_P(CsvFile,
+    ParameterizedCsvModifyTest,
+    testing::Values(
+        CsvModifyParams { an_address, "modify_test_modify_pos", "Pieter", {"y","1","y","y","Pieter","n","q"}, "Pieter"},
+        CsvModifyParams { an_address, "modify_confirm_main_no_pos", "", {"n"}, "1"},
+        CsvModifyParams { an_address, "modify_confirm_modify_no_pos", "", {"y","1","n"}, "1"},
+        CsvModifyParams { an_address, "modify_confirm_update_quit_pos", "", {"y","1","y", "q"}, "0"},
+        CsvModifyParams { an_address, "modify_confirm_update_no_pos", "", {"y","1","y", "n", "q"}, "0"}
+    )
+);
 
-    an_address.push_back(consequtive_elements_with_quotes_entry);
-
-    CsvFile<string> csv("test.csv", an_address, 8);
-    csv.write_file("in");
-
-    system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
-
-    string act_lines = count_lines_in_testfile();
-
-    ASSERT_EQ(csv.get_m_csv_vector().size(), 2) << "Expected 2 rows written/read";
-    ASSERT_EQ(act_lines, "2") << "Expected 2 rows written/read";
-
-    an_address.pop_back();
-}
-
-TEST_F(CsvFileTestBase, last_element_with_quotes_pos) {
-
-    an_address.push_back(last_element_with_quotes_entry);
-
-    CsvFile<string> csv("test.csv", an_address, 8);
-    csv.write_file("in");
-
-    system("wc -l test.csv|cut -d\" \" -f1 > out.txt"); // execute the linux command
-
-    string act_lines = count_lines_in_testfile();
-
-    ASSERT_EQ(csv.get_m_csv_vector().size(), 2) << "Expected 2 rows written/read";
-    ASSERT_EQ(act_lines, "2") << "Expected 2 rows written/read";
-
-    an_address.pop_back();
-}
-
-TEST_F(CsvFileTestBase, search_file_string_pos) {
-
-    CsvFile<string> csv("test.csv", an_address, 8);
-    csv.write_file("in");
-    string expected_found = "Puk";
-    string search_found = csv.search_entry("Puk");
-
-    ASSERT_EQ(expected_found, search_found) << "Did not find Puk";
-}
-
-TEST_F(CsvFileTestBase, search_file_string_neg) {
-
-
-    CsvFile<string> csv("test.csv", an_address, 8);
-    csv.write_file("in");
-    string expected_found = "Pietje";
-    string search_found = csv.search_entry("Pietje");
-
-    ASSERT_NE(expected_found, search_found) << "Should not find Pietje";
-}
-
-TEST_F(CsvFileTestBase, search_file_element_quotes_with_comma_pos) {
-
-    an_address.push_back(element_with_comma_entry);
-
-    CsvFile<string> csv("test.csv", an_address, 8);
-    csv.write_file("in");
-    string expected_found = "\"Pietje, Pukkie\"";
-    string search_found = csv.search_entry("Pietje");
-
-    ASSERT_EQ(expected_found, search_found) << "Should have found Pietje, Pukkie";
-
-    an_address.pop_back();
-}
-
-TEST_F(CsvFileTestBase, search_single_element_with_quotes_pos) {
-
-    an_address.push_back(single_element_with_quotes_entry);
-
-    CsvFile<string> csv("test.csv", an_address, 8);
-    csv.write_file("in");
-    string expected_found = "\"Pietje, Pukkie";
-    string search_found = csv.search_entry("Pietje");
-
-    ASSERT_EQ(expected_found, search_found) << "Should have found \"Pietje, Pukkie";
-
-    an_address.pop_back();
-}
-
-TEST_F(CsvFileTestBase, search_two_consequtive_elements_with_quotes_pos) {
-
-    an_address.push_back(consequtive_elements_with_quotes_entry);
-
-    CsvFile<string> csv("test.csv", an_address, 8);
-    csv.write_file("in");
-    string expected_found = "Pietje\",\"Pukkie";
-    string search_found = csv.search_entry("Pietje");
-
-    ASSERT_EQ(expected_found, search_found) << "Should have found Pietje\",\"Pukkie";
-
-    an_address.pop_back();
-}
-
-TEST_F(CsvFileTestBase, search_last_element_with_quotes_pos) {
-
-    an_address.push_back(last_element_with_quotes_entry);
-
-    CsvFile<string> csv("test.csv", an_address, 8);
-    csv.write_file("in");
-    string expected_found = "\"piet@puk.nl";
-    string search_found = csv.search_entry("puk.nl");
-
-    ASSERT_EQ(expected_found, search_found) << "Should have found \"piet@puk.nl";
-
-    an_address.pop_back();
-}
-
-// modify test
-TEST_F(CsvFileTestBase, modify_test_modify_pos) {
-
-    CsvFile<string> csv("test.csv", an_address, 8);
-
-    // Do you want to modify addresses: y
-    // Line number to modify\nEnter -1 to step through them all: 1
-    // Do you want to modify line: 1?\n Confirm modify y/n or q to quit: y
-    // Do you want to modify this string?\n Confirm y/n or quit: q: y
-    // Enter new string? Pieter
-    // Do you want to modify this string? n
-    // Do you want to modify this string? q
-    vector<string> input {"y","1","y","y","Pieter","n","q"};
-    bool isTest = true;
-
-    int result = csv.delete_modify("modify", "addresses", isTest, input);
-    ASSERT_EQ(0, result) << "Failed to modify";
-
-    csv.write_file("in");
-    string expected_found = "Pieter";
-    string search_found = csv.search_entry("Pieter");
-
-    ASSERT_EQ(expected_found, search_found) << "Should have found Pieter";
-}
-
-TEST_F(CsvFileTestBase, modify_confirm_main_no_pos) {
-
-    CsvFile<string> csv("test.csv", an_address, 8);
-
-    // Do you want to modify addresses: n
-    vector<string> input {"n"};
-    bool isTest = true;
-
-    int result = csv.delete_modify("modify", "addresses", isTest, input);
-    ASSERT_EQ(1, result) << "Failed to enter no in main confirm";
-}
-
-TEST_F(CsvFileTestBase, modify_confirm_modify_no_pos) {
-
-    CsvFile<string> csv("test.csv", an_address, 8);
-
-    // Do you want to modify addresses: y
-    // Line number to modify\nEnter -1 to step through them all: 1
-    // Do you want to modify line: 1?\n Confirm modify y/n or q to quit: n
-    vector<string> input {"y","1","n"};
-    bool isTest = true;
-
-    int result = csv.delete_modify("modify", "addresses", isTest, input);
-    cout << endl;
-    ASSERT_EQ(1, result) << "Failed to enter no in modify confirm";
-}
-
-TEST_F(CsvFileTestBase, modify_confirm_update_quit_pos) {
-
-    CsvFile<string> csv("test.csv", an_address, 8);
-
-    // Do you want to modify addresses: y
-    // Line number to modify\nEnter -1 to step through them all: 1
-    // Do you want to modify line: 1?\n Confirm modify y/n or q to quit: y
-    // Do you want to modify this string?\n Confirm y/n or quit: q: q
-    vector<string> input {"y","1","y", "q"};
-    bool isTest = true;
-
-    int result = csv.delete_modify("modify", "addresses", isTest, input);
-    cout << endl;
-    ASSERT_EQ(0, result) << "Failed to enter no in update confirm";
-}
-
-TEST_F(CsvFileTestBase, modify_confirm_update_no_pos) {
-
-    CsvFile<string> csv("test.csv", an_address, 8);
-
-    // Do you want to modify addresses: y
-    // Line number to modify\nEnter -1 to step through them all: 1
-    // Do you want to modify line: 1?\n Confirm modify y/n or q to quit: y
-    // Do you want to modify this string?\n Confirm y/n or quit: q: n
-    // Do you want to modify this string?\n Confirm y/n or quit: q: q
-    vector<string> input {"y","1","y", "n", "q"};
-    bool isTest = true;
-
-    int result = csv.delete_modify("modify", "addresses", isTest, input);
-    cout << endl;
-    ASSERT_EQ(0, result) << "Failed to enter no in update confirm";
-}
 
 // integer tests
 TEST_F(CsvFileTestBase, write_read_file_int_pos) {
@@ -449,7 +304,8 @@ TEST_F(CsvFileTestBase, byte_order_mark_UTF8_pos) {
 TEST_F(CsvFileTestBase, byte_order_mark_UTF16_pos) {
 
     string csvLine;
-    create_utf16_file();
+    UTF16 utf16("test.csv", "test.csv.utf8");
+    utf16.create_utf16_file();
 
     ifstream inf("test.csv");
     getline(inf, csvLine, '\n');
@@ -460,27 +316,27 @@ TEST_F(CsvFileTestBase, byte_order_mark_UTF16_pos) {
 
 // convert utf16 test
 TEST_F(CsvFileTestBase, convert_UTF16_to_UTF8_pos) {
-
     string csvLine;
-    create_utf16_file();
-    CsvFile<string> csv("test.csv", 8);
+    UTF16 utf16("test.csv.utf16", "test.csv.utf8");
+    utf16.create_utf16_file();
+    CsvFile<string> csv("test.csv.utf16", 8);
 
-    ifstream inf("test.csv");
+    ifstream inf("test.csv.utf16");
     getline(inf, csvLine, '\n');
     inf.close();
-    string bom_type = check_byte_order_mark(csvLine.c_str(), csvLine.size());
+    string utf16_bom = check_byte_order_mark(csvLine.c_str(), csvLine.size());
 
-    ASSERT_EQ("UTF-16-LE", bom_type) << "Should have found UTF-16-LE";
+    ASSERT_EQ("UTF-16-LE", utf16_bom) << "Should have found UTF-16-LE";
 
-    UTF16 utf16("test.csv", "test.csv.utf8");
-    utf16.ConvertUTF16ToUTF8();
+    UTF16 utf8("test.csv.utf16", "test.csv.utf8");
+    utf8.ConvertUTF16ToUTF8();
 
-    ifstream inf2("test.csv");
+    ifstream inf2("test.csv.utf8");
     getline(inf2, csvLine, '\n');
     inf2.close();
-    string bom_type2 = check_byte_order_mark(csvLine.c_str(), csvLine.size());
+    string utf8_bom = check_byte_order_mark(csvLine.c_str(), csvLine.size());
 
-    ASSERT_EQ("UTF-8", bom_type2) << "After converting should have found UTF-8";
+    ASSERT_EQ("UTF-8", utf8_bom) << "After converting should have found UTF-8";
 
     csv.read_file();
     for(uint x=0;x<csv.get_m_csv_vector().size(); x++){

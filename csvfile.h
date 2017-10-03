@@ -14,12 +14,8 @@
 #include <sstream>
 #include <vector>
 
+#include "convert_utf16.h"
 
-//! gets user input
-std::string get_input(std::string);
-
-//! copies a file used in backup and restore
-void copyFile(std::string, std::string, std::string);
 
 /*! CsvFile Class: a class provides functions for doing operations on CSV files
  * (comma separated files).

@@ -16,8 +16,6 @@
 #include <cassert>
 
 #include "csvfile.h"
-#include "convert_utf16.cpp"
-#include "common_utils.cpp"
 
 
 using namespace std;

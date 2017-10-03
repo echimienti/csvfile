@@ -8,8 +8,14 @@
 
 #include "convert_utf16.h"
 
+
 using namespace std;
 
+UTF16::UTF16(string utf16_fileName, string utf8_fileName) :
+        m_utf16_filename(utf16_fileName), m_utf8_filename(utf8_fileName)
+    {
+
+    }
 
 int UTF16::ConvertUTF16ToUTF8(){
     /* Converts an UTF16-LE file to UTF-8
@@ -72,6 +78,7 @@ int UTF16::ConvertUTF16ToUTF8(){
             else{
                 // take second of 2 bytes and leave 3 bytes \00 at end of line
                 if(i%2 == 1 && i < line_size - 3){
+                    // remove remaining upside question marks
                     if(line_utf16[i] == 0x13){
                         line_utf16[i] = '-';
                     }
@@ -101,7 +108,7 @@ int UTF16::ConvertUTF16ToUTF8(){
     return 0;
 }
 
-void create_utf16_file(){
+void UTF16::create_utf16_file(){
     /* create an utf-16-le file with 2 csv entries
      * containing 2 rows with 8 times 11111111
      *
@@ -109,7 +116,7 @@ void create_utf16_file(){
      * @return: void
      */
     ofstream outf;
-    string utf16_filename = "test.csv";
+    string utf16_filename = m_utf16_filename.c_str();
 
     try {
         outf.open(utf16_filename, ios::binary);
