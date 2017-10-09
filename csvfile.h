@@ -29,6 +29,9 @@ private:
     int m_row;
     int m_col;
 public:
+    //! Basic Constructor
+    CsvFile(std::string);
+
     //! Constructor for all operations except adding a row
     CsvFile(std::string, int);
 

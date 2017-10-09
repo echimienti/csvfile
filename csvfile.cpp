@@ -20,6 +20,13 @@
 
 using namespace std;
 
+template <class T>
+//! Basic Constructor
+CsvFile<T>::CsvFile(string fileName) :
+            m_filename(fileName), m_row(count_csv_file_lines())
+{
+
+}
 
 template <class T>
 //! Constructor for all operations except adding a row
