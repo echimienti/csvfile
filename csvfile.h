@@ -68,4 +68,6 @@ public:
 
     //! Update a field in 2 dimensional vector
     void update_field(int, bool isTest=false, std::vector<std::string> inp={});
+
+    std::vector<std::string> get_csv_header_line();
 };

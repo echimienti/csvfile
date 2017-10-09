@@ -37,6 +37,40 @@ CsvFile<T>::CsvFile(string fileName, vector< vector<T> > a_csvLine, int col) :
 
 }
 
+template <>
+vector<string> CsvFile<string>::get_csv_header_line() {
+    /* Reads in the first line from the csv file and pushes the elements to
+     * a vector. The length of the vector will result in nr of columns
+     *
+     * @return: int: nr of columns
+     */
+    string csvLine;
+    ifstream inf(m_filename.c_str());
+    vector<string> csvHeaderLine;
+
+    // If we couldn't open the input file stream for reading
+    if (!inf) {
+        // Print an error and exit
+        cerr << m_filename << " is not present!" << endl;
+        return csvHeaderLine;
+    }
+
+    // While there's still stuff left to read
+    getline(inf, csvLine, '\n');
+    if (csvLine.size() != 0) {
+        string element;
+        stringstream csvLineStream(csvLine);
+
+        while(std::getline(csvLineStream,element,',')){
+            csvHeaderLine.push_back(element);
+        }
+    }
+
+    inf.close();
+
+    return csvHeaderLine;
+}
+
 template <class T>
 void CsvFile<T>::print_entries() {
     /* Print the csv entries from the 2 dimensional vector
