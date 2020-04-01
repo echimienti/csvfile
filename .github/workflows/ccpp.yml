@@ -1,0 +1,35 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: install build-essential cmake
+      run: sudo apt install build-essential cmake
+    - name: install gtest
+      run: |
+          echo "Installing libgtest-dev"
+          sudo apt-get install libgtest-dev
+          echo "cd to usr/src/gtest"
+          cd /usr/src/gtest
+          sudo cmake CMakeLists.txt
+          sudo make
+          echo "cp compiled gtest files to /usr/lib"
+          sudo cp *.a /usr/lib
+          echo "cd back to home dir"
+          cd ~
+    - uses: actions/checkout@v2
+      with:
+        ref: master
+    - name: make
+      run: make
+    - name: make test
+      run: make test
